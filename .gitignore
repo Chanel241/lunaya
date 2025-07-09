@@ -19,4 +19,6 @@ Fichiers temporaires
 .DS_Store
 *.swp
 *.swo
-Fichiers médias (si tu ne veux pas les pousser sur GitHub)
+Fichiers médias
+
+media/
