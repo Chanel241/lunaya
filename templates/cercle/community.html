@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Cercle Lunaire
+{% endblock %}
+
+{% block content %}
+    <h2>Cercle Lunaire <i class="fa fa-users"></i></h2>
+    <p>Partagez vos expériences et connectez-vous avec d'autres femmes.</p>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" action="{% url 'community' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Publier</button>
+    </form>
+    {% for post in posts %}
+        <div class="card">
+            <p><strong>{{ post.user.username }}</strong> - {{ post.created_at|date:"d/m/Y H:i" }}</p>
+            <p>{{ post.content }}</p>
+        </div>
+    {% empty %}
+        <p>Aucun message dans le cercle pour le moment.</p>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,22 @@
+Environnement virtuel
+
+env/
+venv/
+Fichiers Python
+
+*.pyc
+pycache/
+*.pyo
+*.pyd
+Fichiers Django
+
+*.log
+*.pot
+*.pyc
+db.sqlite3
+Fichiers temporaires
+
+.DS_Store
+*.swp
+*.swo
+Fichiers médias (si tu ne veux pas les pousser sur GitHub)

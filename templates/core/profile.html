@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+    <h2>Mon Profil</h2>
+    {% if profile %}
+    <div class="card">
+        <p>Nom : {{ profile.user.username }}</p>
+        <p>Date de naissance : {{ profile.birthdate|date:"d/m/Y" }}</p>
+        <p>Langue : {{ profile.language|default:"Français" }}</p>
+        <p>Dernières règles : {{ profile.last_period|date:"d/m/Y" }}</p>
+    </div>
+    <button onclick="alert('Mode hors ligne activé (simulation).')">Mode hors ligne</button>
+    <button onclick="alert('Redirection vers Airtel Money/Moov pour premium.')">Passer à Premium</button>
+    {% else %}
+    <p>Veuillez vous connecter pour voir votre profil.</p>
+    {% endif %}
+{% endblock %}

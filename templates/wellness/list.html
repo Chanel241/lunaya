@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Conseils de Bien-Être{% endblock %}
+{% block content %}
+    <h2>Conseils de Bien-Être <i class="fa fa-leaf"></i></h2>
+    <p>Découvrez des idées simples pour vous détendre et vous reconnecter.</p>
+    {% for tip in tips %}
+    <div class="card">
+        <p><strong>{{ tip.title }}</strong> ({{ tip.type|default:"Relaxation" }})</p>
+        <p>{{ tip.description }}</p>
+    </div>
+    {% empty %}
+    <p>Aucun conseil disponible pour le moment.</p>
+    {% endfor %}
+{% endblock %}

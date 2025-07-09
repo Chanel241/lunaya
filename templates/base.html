@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunaya - {% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Quicksand&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f8e1e9, #d8bfd8);
+            font-family: 'Quicksand', sans-serif;
+            color: #4b2e4a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #8b5e83;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        .nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #d8bfd8;
+        }
+        .nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        .nav li {
+            display: inline-block;
+        }
+        a, button {
+            background: #e8a0bf;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1em;
+            text-decoration: none;
+            color: #4b2e4a;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+        a:hover, button:hover {
+            background: #d88c9a;
+            transform: scale(1.05);
+        }
+        .content {
+            text-align: center;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #d8bfd8;
+            border-radius: 5px;
+            width: 250px;
+            font-family: 'Quicksand', sans-serif;
+        }
+        textarea {
+            width: 100%;
+            max-width: 600px;
+        }
+        .card {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff5ee;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .affirmation {
+            font-style: italic;
+            color: #8b5e83;
+            margin-top: 15px;
+        }
+        .fa-moon, .fa-leaf, .fa-calendar, .fa-headphones, .fa-users, .fa-user, .fa-sign-in, .fa-sign-out, .fa-user-plus {
+            color: #4b2e4a;
+            margin-right: 5px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            a, button {
+                padding: 8px 16px;
+                font-size: 0.9em;
+                width: 100%;
+                text-align: center;
+            }
+            input, textarea, select {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/service-worker.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.log('Service Worker registration failed', err));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lunaya 🌙</h1>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+        <nav class="nav">
+            <ul>
+                <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> Accueil</a></li>
+                <li><a href="{% url 'cycle_tracker' %}"><i class="fa fa-calendar"></i> Mon Cycle</a></li>
+                <li><a href="{% url 'wellness_list' %}"><i class="fa fa-leaf"></i> Conseils</a></li>
+                <li><a href="{% url 'meditations_list' %}"><i class="fa fa-headphones"></i> Méditations</a></li>
+                <li><a href="{% url 'community' %}"><i class="fa fa-users"></i> Cercle Lunaire</a></li>
+                <li><a href="{% url 'horoscope' %}"><i class="fa fa-star"></i> Horoscope</a></li>
+                <li><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profil</a></li>
+                <li><a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Connexion</a></li>
+                <li><a href="{% url 'signup' %}"><i class="fa fa-user-plus"></i> Inscription</a></li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

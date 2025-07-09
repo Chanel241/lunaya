@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Inscription - Lunaya{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>Inscription <i class="fa fa-user-plus"></i></h2>
+        <p>Créez votre compte pour rejoindre Lunaya.</p>
+        {% if messages %}
+            {% for message in messages %}
+                <p style="color: #d88c9a;">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">S'inscrire</button>
+        </form>
+        <p>Déjà un compte ? <a href="{% url 'login' %}">Connectez-vous ici</a>.</p>
+    </div>
+{% endblock %}

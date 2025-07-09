@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Méditations{% endblock %}
+{% block content %}
+    <h2>Méditations Guidées <i class="fa fa-headphones"></i></h2>
+    <p>Relaxez-vous avec nos méditations inspirées par la nature gabonaise.</p>
+    {% for meditation in meditations %}
+    <div class="card">
+        <p><strong>{{ meditation.title }}</strong></p>
+        <p>{{ meditation.description }}</p>
+        {% if meditation.audio_file %}
+        <audio controls>
+            <source src="{{ meditation.audio_file.url }}" type="audio/mpeg">
+            Votre navigateur ne supporte pas l’audio.
+        </audio>
+        {% endif %}
+        {% if meditation.video_file %}
+        <video controls width="100%" style="max-width: 600px;">
+            <source src="{{ meditation.video_file.url }}" type="video/mp4">
+            Votre navigateur ne supporte pas la vidéo.
+        </video>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>Aucune méditation disponible pour le moment.</p>
+    {% endfor %}
+{% endblock %}

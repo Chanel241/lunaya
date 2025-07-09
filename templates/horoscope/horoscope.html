@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load horoscope_tags %}
+
+{% block title %}
+ Horoscope
+{% endblock %}
+
+{% block content %}
+    <h2>Votre Horoscope <i class="fa fa-star"></i></h2>
+    <p>Découvrez ce que les étoiles vous réservent aujourd’hui.</p>
+    <form method="get">
+        <label for="sign">Choisissez votre signe :</label>
+        <select name="sign" id="sign" onchange="this.form.submit()">
+            {% for sign in signs %}
+                <option value="{{ sign.value }}" {% if sign.value == selected_sign %}selected{% endif %}>
+                    {{ sign.label }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+    {% if horoscope %}
+        <div class="card">
+            <p><strong>{{ horoscope.get_sign_display }} - {{ today|date:"d/m/Y" }}</strong></p>
+            <p>{{ horoscope.message }}</p>
+        </div>
+    {% elif error_message %}
+        <p>{{ error_message }}</p>
+    {% else %}
+        <p>Aucun horoscope disponible pour {{ selected_sign|get_sign_display }} aujourd’hui.</p>
+    {% endif %}
+{% endblock %}

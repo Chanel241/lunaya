@@ -1,0 +1,16 @@
+{
+    "name": "Lunaya",
+    "short_name": "Lunaya",
+    "description": "Application de bien-être et énergie féminine pour les femmes gabonaises",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f8e1e9",
+    "theme_color": "#f8e1e9",
+    "icons": [
+        {
+            "src": "/static/favicon.ico",
+            "sizes": "64x64",
+            "type": "image/x-icon"
+        }
+    ]
+}

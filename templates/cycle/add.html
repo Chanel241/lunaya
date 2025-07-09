@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Ajouter un Cycle{% endblock %}
+{% block content %}
+    <h2>Ajouter un Cycle <i class="fa fa-calendar-plus"></i></h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Enregistrer</button>
+    </form>
+    <a href="{% url 'cycle_tracker' %}">Retour au suivi</a>
+{% endblock %}
