@@ -2,40 +2,49 @@
 {% load static %}
 {% block title %}Mon Cycle{% endblock %}
 {% block content %}
-    <h2>Mon Cycle <i class="fa fa-calendar"></i></h2>
-    {% if cycle_info %}
-    <div class="card">
-        <p><strong>Jour du cycle</strong> : {{ cycle_info.cycle_day }}</p>
-        <p><strong>Phase actuelle</strong> : {{ cycle_info.phase }}</p>
-        {% if cycle_info.ovulation_date %}
-        <p><strong>Prochaine ovulation estimée</strong> : {{ cycle_info.ovulation_date|date:"d/m/Y" }}</p>
-        {% endif %}
-        {% if cycle_info.next_period %}
-        <p><strong>Prochaines règles estimées</strong> : {{ cycle_info.next_period|date:"d/m/Y" }}</p>
-        {% endif %}
-        <p><strong>Conseil</strong> : Infusion d’hibiscus et repos léger.</p>
+  <h2>Mon Cycle <i class="fa fa-calendar"></i></h2>
+  <p class="text-center mb-4">Suivez votre cycle et recevez des conseils personnalisés.</p>
+  {% if cycle_info %}
+  <div class="card mb-4">
+    <div class="card-body">
+      <h3 class="card-title" style="font-size: 1.5em;">Cycle Actuel</h3>
+      <p><strong>Jour du cycle</strong> : {{ cycle_info.cycle_day }}</p>
+      <p><strong>Phase actuelle</strong> : {{ cycle_info.phase }}</p>
+      {% if cycle_info.ovulation_date %}
+      <p><strong>Prochaine ovulation estimée</strong> : {{ cycle_info.ovulation_date|date:"d/m/Y" }}</p>
+      {% endif %}
+      {% if cycle_info.next_period %}
+      <p><strong>Prochaines règles estimées</strong> : {{ cycle_info.next_period|date:"d/m/Y" }}</p>
+      {% endif %}
+      <p><strong>Conseil</strong> : Infusion d’hibiscus et repos léger.</p>
     </div>
-    {% else %}
-    <p>Aucun cycle enregistré. Ajoutez une entrée ci-dessous.</p>
-    {% endif %}
-
-    <h3>Ajouter une entrée</h3>
-    <form method="post" action="{% url 'cycle_add' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enregistrer</button>
-    </form>
-
-    <h3>Historique</h3>
+  </div>
+  {% else %}
+  <p class="text-center">Aucun cycle enregistré. Ajoutez une entrée ci-dessous.</p>
+  {% endif %}
+  <h3>Ajouter une entrée</h3>
+  <form method="post" action="{% url 'cycle_add' %}" class="form-group">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+  </form>
+  <h3>Historique</h3>
+  <div class="row">
     {% for entry in cycles %}
-    <div class="card">
-        <p><strong>{{ entry.cycle.start_date|date:"d/m/Y" }}</strong> - {{ entry.phase }} (Jour {{ entry.cycle_day }})</p>
-        {% if entry.cycle.end_date %}
-        <p>Fin : {{ entry.cycle.end_date|date:"d/m/Y" }}</p>
-        {% endif %}
-        <p>Notes : {{ entry.cycle.notes|default:"Aucune note" }}</p>
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="card-title" style="font-size: 1.5em;">{{ entry.cycle.start_date|date:"d/m/Y" }}</h3>
+          <p><strong>Phase</strong> : {{ entry.phase }} (Jour {{ entry.cycle_day }})</p>
+          {% if entry.cycle.end_date %}
+          <p><strong>Fin</strong> : {{ entry.cycle.end_date|date:"d/m/Y" }}</p>
+          {% endif %}
+          <p><strong>Notes</strong> : {{ entry.cycle.notes|default:"Aucune note" }}</p>
+        </div>
+      </div>
     </div>
     {% empty %}
-    <p>Aucune entrée enregistrée. Ajoutez vos dates ci-dessus.</p>
+    <p class="text-center">Aucune entrée enregistrée. Ajoutez vos dates ci-dessus.</p>
     {% endfor %}
+  </div>
 {% endblock %}

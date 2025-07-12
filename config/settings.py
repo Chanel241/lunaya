@@ -1,11 +1,16 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'your-secret-key'
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')  # Utilise une variable d'environnement
+
+CSRF_TRUSTED_ORIGINS = ['https://45e5c051f087.ngrok-free.app']  # Autorise toutes les URLs ngrok
+DEBUG = True  # Garde pour développement, désactive en production
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '45e5c051f087.ngrok-free.app']  # Inclut toutes les URLs ngrok
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -14,12 +19,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',  # Ajout de l'application core
+    'core',
     'cycle',
+    'horoscope',
     'wellness',
     'meditations',
     'cercle',
-    'horoscope',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +84,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+LOGIN_URL = '/login/'  # Pointe vers login_view
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -93,12 +102,19 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
     },
     'loggers': {
-        '': {
-            'handlers': ['console'],
+        'horoscope.views': {
+            'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,
         },
     },
 }
+
+CSRF_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production
+SESSION_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production

@@ -5,6 +5,7 @@ from .forms import SignUpForm
 from .models import Profile
 from django.utils import timezone
 from django.contrib import messages
+from django.urls import reverse
 
 def signup(request):
     if request.method == 'POST':
@@ -32,13 +33,19 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, "Connexion réussie !")
-            return redirect('home')
+            next_url = request.POST.get('next')
+            if next_url:
+                try:
+                    return redirect(next_url)  # Redirige vers l'URL demandée
+                except Exception:
+                    pass  # Passe si l'URL est invalide
+            return redirect(reverse('home'))  # Redirige vers home par défaut
         else:
             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
         form = AuthenticationForm()
-    return render(request, 'core/login.html', {'form': form})
+    next_url = request.GET.get('next', reverse('home'))
+    return render(request, 'core/login.html', {'form': form, 'next': next_url})
 
 def logout_view(request):
     logout(request)
@@ -62,5 +69,5 @@ def home(request):
     return render(request, 'core/home.html', context)
 
 def profile(request):
-    profile = Profile.objects.get(user=request.user) if request.user.is_authenticated else None
+    profile = Profile.objects.filter(user=request.user).first() if request.user.is_authenticated else None
     return render(request, 'core/profile.html', {'profile': profile})

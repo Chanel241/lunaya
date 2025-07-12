@@ -1,31 +1,33 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-    Cercle Lunaire
-{% endblock %}
-
+{% block title %}Cercle Lunaire{% endblock %}
 {% block content %}
-    <h2>Cercle Lunaire <i class="fa fa-users"></i></h2>
-    <p>Partagez vos expériences et connectez-vous avec d'autres femmes.</p>
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
-    <form method="post" action="{% url 'community' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Publier</button>
-    </form>
-    {% for post in posts %}
-        <div class="card">
-            <p><strong>{{ post.user.username }}</strong> - {{ post.created_at|date:"d/m/Y H:i" }}</p>
-            <p>{{ post.content }}</p>
-        </div>
-    {% empty %}
-        <p>Aucun message dans le cercle pour le moment.</p>
+  <h2>Cercle Lunaire <i class="fa fa-users"></i></h2>
+  <p class="text-center mb-4">Partagez vos expériences et connectez-vous avec d'autres femmes.</p>
+  {% if messages %}
+  <div class="messages text-center">
+    {% for message in messages %}
+    <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: #d88c9a;">{{ message }}</p>
     {% endfor %}
+  </div>
+  {% endif %}
+  <form method="post" action="{% url 'community' %}" class="form-group text-center">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Publier</button>
+  </form>
+  <div class="row">
+    {% for post in posts %}
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-body">
+          <p><i class="fas fa-user-circle" style="color: #8b5e83;"></i> <strong>{{ post.user.username }}</strong> - {{ post.created_at|date:"d/m/Y H:i" }}</p>
+          <p class="card-text">{{ post.content }}</p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center">Aucun message dans le cercle pour le moment.</p>
+    {% endfor %}
+  </div>
 {% endblock %}

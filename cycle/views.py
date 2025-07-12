@@ -13,12 +13,11 @@ def cycle_tracker(request):
     cycle_info = {}
     cycles_with_phases = []
 
-    # Calcul du cycle actuel
     if cycles.exists():
         latest_cycle = cycles.first()
-        days_since_start = (today - latest_cycle.start_date).days
-        cycle_length = latest_cycle.cycle_length
-        cycle_day = (days_since_start % cycle_length) + 1
+        days_since_start = (today - latest_cycle.start_date).days + 1
+        cycle_length = latest_cycle.cycle_length or 28
+        cycle_day = days_since_start % cycle_length if days_since_start > 0 else 1
         if cycle_day <= 5:
             phase = "Phase menstruelle"
         elif cycle_day <= 14:
@@ -36,10 +35,9 @@ def cycle_tracker(request):
             'next_period': next_period
         }
 
-        # Calculer la phase pour chaque cycle dans l'historique
         for cycle in cycles:
-            days_since_start = (today - cycle.start_date).days
-            cycle_day = (days_since_start % cycle.cycle_length) + 1
+            days_since_start = (today - cycle.start_date).days + 1
+            cycle_day = days_since_start % cycle.cycle_length if days_since_start > 0 else 1
             if cycle_day <= 5:
                 phase = "Phase menstruelle"
             elif cycle_day <= 14:
@@ -66,7 +64,6 @@ def cycle_tracker(request):
             messages.error(request, "Erreur dans le formulaire. Veuillez vérifier vos données.")
     else:
         form = CycleForm()
-
     return render(request, 'cycle/tracker.html', {
         'form': form,
         'cycles': cycles_with_phases,

@@ -2,13 +2,126 @@
 {% load static %}
 {% block title %}Accueil - Lunaya{% endblock %}
 {% block content %}
-    <div class="container">
-        <h2>Bienvenue sur Lunaya 🌙</h2>
-        <p>Lunaya est une application pour toutes les femmes, où qu’elles soient, pour célébrer leur énergie féminine à travers un suivi de cycle, des conseils de bien-être, des méditations, un cercle communautaire et un horoscope quotidien.</p>
-        <div class="card">
-            <p><strong>Découvrez Lunaya :</strong></p>
-            <p>Suivez votre cycle menstruel, trouvez des conseils personnalisés pour votre bien-être, détendez-vous avec des méditations guidées, partagez vos expériences dans notre Cercle Lunaire, et laissez-vous inspirer par votre horoscope quotidien. Utilisez la navigation ci-dessous pour explorer toutes nos fonctionnalités.</p>
-            <div class="affirmation">“Lunaya, votre compagne pour une vie en harmonie avec votre essence féminine.”</div>
-        </div>
+  <div class="text-center">
+    <h2>Bienvenue sur Lunaya 🌙</h2>
+    <img src="{% static 'images/lunaya-hero.jpg' %}" alt="Lunaya Hero" class="img-fluid rounded mb-4" style="max-width: 100%; height: auto; max-height: 450px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);" loading="lazy">
+    <p class="lead">Lunaya est votre sanctuaire numérique, créé pour célébrer l’énergie féminine à travers un suivi de cycle, des méditations apaisantes, des conseils bien-être, un cercle communautaire vibrant, et un horoscope quotidien inspirant.</p>
+    <div class="card starry-card" style="min-height: 300px; max-height: 400px; overflow: hidden;"> <!-- Réduit la hauteur -->
+      <div class="card-body">
+        <h3 class="card-title">Découvrez l’univers Lunaya</h3>
+        <p>Explorez des méditations guidées, suivez votre cycle avec précision, partagez vos expériences dans notre Cercle Lunaire, et laissez-vous guider par les étoiles.</p>
+        <a href="{% url 'meditations_list' %}" class="btn sparkle">Commencer maintenant</a>
+      </div>
     </div>
+    <div class="affirmation typewriter">“Lunaya, votre compagne pour une vie en harmonie avec votre essence féminine.”</div>
+  </div>
+  <style>
+    .text-center {
+      padding: 2rem 1rem;
+    }
+    .lead {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      margin: 1rem auto; /* Garde la marge */
+      max-width: 650px; /* Garde */
+    }
+    .card-title {
+      font-size: 1.5rem; /* Garde */
+      margin-bottom: 1rem;
+    }
+    .sparkle {
+      position: relative;
+      overflow: hidden;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(90deg, #f8e1e9, #4b2e4a);
+    }
+    .sparkle::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 10%, transparent 20%);
+      transform: rotate(45deg);
+      animation: sparkle 3s infinite;
+    }
+    @keyframes sparkle {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      20% { transform: translateX(100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+    .typewriter {
+      overflow: hidden;
+      white-space: normal;
+      font-size: 1rem;
+      margin-top: 1rem;
+      animation: typewriter 4s steps(60) 1s 1 normal both, blink 0.75s step-end infinite;
+    }
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+    .starry-card {
+      background-image: url('{% static "images/starry-background-new.jpg" %}');
+      background-size: cover;
+      background-position: center;
+      background-color: #1a1a2e;
+    }
+    .card-body {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .img-fluid {
+        max-width: 100%;
+        max-height: 350px; /* Garde */
+      }
+      .lead {
+        font-size: 1rem;
+      }
+      .card {
+        max-width: 90%;
+        margin: 0.5rem auto;
+      }
+      .card-body {
+        padding: 1rem;
+      }
+      .card-title {
+        font-size: 1.3rem;
+      }
+      .typewriter {
+        font-size: 0.9rem;
+      }
+      .starry-card {
+        min-height: 250px; /* Réduit sur mobile */
+        max-height: 350px;
+      }
+    }
+    @media (max-width: 576px) {
+      .lead {
+        font-size: 0.9rem;
+      }
+      .card-title {
+        font-size: 1.1rem;
+      }
+      .img-fluid {
+        max-height: 250px; /* Garde */
+      }
+      .starry-card {
+        min-height: 200px; /* Réduit encore sur petit écran */
+        max-height: 300px;
+      }
+    }
+  </style>
 {% endblock %}

@@ -2,161 +2,62 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lunaya - {% block title %}{% endblock %}</title>
-    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Quicksand&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(to bottom, #f8e1e9, #d8bfd8);
-            font-family: 'Quicksand', sans-serif;
-            color: #4b2e4a;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin: 20px;
-        }
-        h1 {
-            font-family: 'Playfair Display', serif;
-            color: #8b5e83;
-            font-size: 2.5em;
-            text-align: center;
-        }
-        .nav {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #d8bfd8;
-        }
-        .nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-        }
-        .nav li {
-            display: inline-block;
-        }
-        a, button {
-            background: #e8a0bf;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 1em;
-            text-decoration: none;
-            color: #4b2e4a;
-            cursor: pointer;
-            transition: background 0.3s ease, transform 0.2s ease;
-            display: inline-block;
-        }
-        a:hover, button:hover {
-            background: #d88c9a;
-            transform: scale(1.05);
-        }
-        .content {
-            text-align: center;
-        }
-        .form-group {
-            margin: 15px 0;
-        }
-        input, textarea, select {
-            padding: 10px;
-            border: 1px solid #d8bfd8;
-            border-radius: 5px;
-            width: 250px;
-            font-family: 'Quicksand', sans-serif;
-        }
-        textarea {
-            width: 100%;
-            max-width: 600px;
-        }
-        .card {
-            margin-top: 15px;
-            padding: 15px;
-            background: #fff5ee;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .affirmation {
-            font-style: italic;
-            color: #8b5e83;
-            margin-top: 15px;
-        }
-        .fa-moon, .fa-leaf, .fa-calendar, .fa-headphones, .fa-users, .fa-user, .fa-sign-in, .fa-sign-out, .fa-user-plus {
-            color: #4b2e4a;
-            margin-right: 5px;
-        }
-        @media (max-width: 600px) {
-            .container {
-                margin: 10px;
-                padding: 15px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .nav ul {
-                flex-direction: column;
-                gap: 10px;
-            }
-            a, button {
-                padding: 8px 16px;
-                font-size: 0.9em;
-                width: 100%;
-                text-align: center;
-            }
-            input, textarea, select {
-                width: 100%;
-            }
-        }
-    </style>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/static/service-worker.js')
-                .then(reg => console.log('Service Worker registered', reg))
-                .catch(err => console.log('Service Worker registration failed', err));
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lunaya - {% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=1.1"> <!-- Version incrémentée -->
+  <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}"> <!-- Remplace par le nouveau favicon -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Lunaya 🌙</h1>
-        </header>
-        <main>
-            {% block content %}
-            {% endblock %}
-        </main>
-        <nav class="nav">
-            <ul>
-                <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> Accueil</a></li>
-                <li><a href="{% url 'cycle_tracker' %}"><i class="fa fa-calendar"></i> Mon Cycle</a></li>
-                <li><a href="{% url 'wellness_list' %}"><i class="fa fa-leaf"></i> Conseils</a></li>
-                <li><a href="{% url 'meditations_list' %}"><i class="fa fa-headphones"></i> Méditations</a></li>
-                <li><a href="{% url 'community' %}"><i class="fa fa-users"></i> Cercle Lunaire</a></li>
-                <li><a href="{% url 'horoscope' %}"><i class="fa fa-star"></i> Horoscope</a></li>
-                <li><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profil</a></li>
-                <li><a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Connexion</a></li>
-                <li><a href="{% url 'signup' %}"><i class="fa fa-user-plus"></i> Inscription</a></li>
-            </ul>
-        </nav>
+  <nav class="custom-navbar">
+    <div class="navbar-content">
+      <a class="navbar-brand" href="{% url 'home' %}">
+        <svg width="2em" height="2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <!-- Croissant de lune SVG -->
+          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zM4 12c0-4.418 3.582-8 8-8 1.848 0 3.55.627 4.9 1.682l-1.413 1.413A6.97 6.97 0 0 0 12 5c-3.866 0-7 3.134-7 7 0 1.848.627 3.55 1.682 4.9l-1.413 1.413A8.97 8.97 0 0 1 4 12z"/>
+        </svg>
+        Lunaya
+      </a>
+      <div class="navbar-links">
+        <ul class="navbar-nav">
+          <li><a class="nav-link" href="{% url 'home' %}"><i class="fa fa-home"></i> Accueil</a></li>
+          <li><a class="nav-link" href="{% url 'cycle_tracker' %}"><i class="fa fa-calendar"></i> Mon Cycle</a></li>
+          <li><a class="nav-link" href="{% url 'wellness_list' %}"><i class="fa fa-leaf"></i> Conseils</a></li>
+          <li><a class="nav-link" href="{% url 'meditations_list' %}"><i class="fa fa-headphones"></i> Méditations</a></li>
+          <li><a class="nav-link" href="{% url 'community' %}"><i class="fa fa-users"></i> Cercle Lunaire</a></li>
+          <li><a class="nav-link" href="{% url 'horoscope' %}"><i class="fa fa-star"></i> Horoscope</a></li>
+          {% if user.is_authenticated %}
+            <li><a class="nav-link" href="{% url 'profile' %}"><i class="fa fa-user"></i> Profil</a></li>
+            <li><a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Déconnexion</a></li>
+          {% else %}
+            <li><a class="nav-link" href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Connexion</a></li>
+            <li><a class="nav-link" href="{% url 'signup' %}"><i class="fa fa-user-plus"></i> Inscription</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <button class="navbar-toggler" type="button" onclick="toggleNav()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </div>
+  </nav>
+  <div class="container mobile-friendly">
+    <header>
+      <h1>LUNAYA 🌙</h1>
+    </header>
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleNav() {
+      const menu = document.querySelector('.navbar-links');
+      menu.classList.toggle('active');
+    }
+  </script>
 </body>
 </html>

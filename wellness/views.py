@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 def wellness_list(request):
     today = date.today()
-    tips = []
+    tips = WellnessTip.objects.filter(date=today)
     tip_types = ['yoga', 'tea', 'relaxation']
     predefined_tips = {
         'yoga': [
@@ -40,23 +40,18 @@ def wellness_list(request):
         ],
     }
 
-    for tip_type in tip_types:
-        try:
-            tip = WellnessTip.objects.filter(type=tip_type, date=today).first()
-            if not tip:
-                available_tips = predefined_tips.get(tip_type, [])
-                if available_tips:
-                    selected_tip = random.choice(available_tips)
-                    tip = WellnessTip.objects.create(
-                        title=selected_tip['title'],
-                        description=selected_tip['description'],
-                        type=tip_type,
-                        date=today
-                    )
-                    logger.info(f"Created wellness tip for {tip_type} on {today}: {selected_tip['title']}")
-            if tip:
-                tips.append(tip)
-        except Exception as e:
-            logger.error(f"Error creating wellness tip for {tip_type}: {str(e)}")
+    if not tips.exists():
+        for tip_type in tip_types:
+            available_tips = predefined_tips.get(tip_type, [])
+            if available_tips:
+                selected_tip = random.choice(available_tips)
+                WellnessTip.objects.create(
+                    title=selected_tip['title'],
+                    description=selected_tip['description'],
+                    type=tip_type,
+                    date=today
+                )
+                logger.info(f"Created wellness tip for {tip_type} on {today}: {selected_tip['title']}")
+        tips = WellnessTip.objects.filter(date=today)
 
     return render(request, 'wellness/list.html', {'tips': tips})

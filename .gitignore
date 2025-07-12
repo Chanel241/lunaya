@@ -21,4 +21,4 @@ Fichiers temporaires
 *.swo
 Fichiers médias
 
-media/
+media/.env

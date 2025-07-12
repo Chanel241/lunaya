@@ -1,0 +1,44 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+.starry-card {
+    background-image: url('{% static "images/starry-background-new.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    background-color: #1a1a2e;
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+}
+@media (max-width: 768px) {
+    .starry-card {
+        padding: 10px;
+        font-size: 14px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    .card {
+        margin: 1rem 0;
+        padding: 1rem;
+    }
+}
+@media (max-width: 480px) {
+    .starry-card {
+        font-size: 12px;
+    }
+    .card-body {
+        padding: 0.5rem;
+    }
+    .row > div {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

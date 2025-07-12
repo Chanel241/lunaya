@@ -2,11 +2,14 @@
 {% load static %}
 {% block title %}Ajouter un Cycle{% endblock %}
 {% block content %}
-    <h2>Ajouter un Cycle <i class="fa fa-calendar-plus"></i></h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Enregistrer</button>
-    </form>
-    <a href="{% url 'cycle_tracker' %}">Retour au suivi</a>
+  <h2>Ajouter un Cycle <i class="fa fa-calendar-plus"></i></h2>
+  <p class="text-center mb-4">Ajoutez une nouvelle entrée pour suivre votre cycle.</p>
+  <form method="post" class="form-group text-center">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+  </form>
+  <div class="text-center mt-3">
+    <a href="{% url 'cycle_tracker' %}" class="btn">Retour au suivi</a>
+  </div>
 {% endblock %}

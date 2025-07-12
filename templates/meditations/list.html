@@ -1,28 +1,42 @@
-
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Méditations{% endblock %}
+{% block title %}Méditations - Lunaya{% endblock %}
 {% block content %}
-    <h2>Méditations Guidées <i class="fa fa-headphones"></i></h2>
-    <p>Relaxez-vous avec nos méditations inspirées par la nature gabonaise.</p>
+  <h2>Méditations Guidées <i class="fa fa-headphones"></i></h2>
+  <p class="text-center mb-5">Plongez dans la sérénité avec nos méditations inspirées par la nature gabonaise.</p>
+  <div class="row">
     {% for meditation in meditations %}
-    <div class="card">
-        <p><strong>{{ meditation.title }}</strong></p>
-        <p>{{ meditation.description }}</p>
-        {% if meditation.audio_file %}
-        <audio controls>
+    <div class="col-12 col-md-6 mb-4">
+      <div class="card" role="article" aria-labelledby="meditation-{{ meditation.id }}">
+        <div class="card-body">
+          <h3 class="card-title" id="meditation-{{ meditation.id }}">{{ meditation.title }}</h3>
+          <p class="card-text">{{ meditation.description }}</p>
+          {% if meditation.audio_file %}
+          <audio controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;">
             <source src="{{ meditation.audio_file.url }}" type="audio/mpeg">
+            {% if request.get_host != '127.0.0.1:8000' %}
+              <source src="https://1cb84b128844.ngrok-free.app/media/meditations/energie_feminine_2JHuUei.mp3" type="audio/mpeg">
+            {% endif %}
+            <p style="color: red;">Audio non chargé. Chemin : {{ meditation.audio_file.url }}</p>
             Votre navigateur ne supporte pas l’audio.
-        </audio>
-        {% endif %}
-        {% if meditation.video_file %}
-        <video controls width="100%" style="max-width: 600px;">
+          </audio>
+          {% else %}
+          <p style="color: red;">Aucun audio. Ajoutez via /admin/.</p>
+          {% endif %}
+          {% if meditation.video_file %}
+          <video controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;">
             <source src="{{ meditation.video_file.url }}" type="video/mp4">
+            {% if request.get_host != '127.0.0.1:8000' %}
+              <source src="https://1cb84b128844.ngrok-free.app{{ meditation.video_file.url }}" type="video/mp4">
+            {% endif %}
             Votre navigateur ne supporte pas la vidéo.
-        </video>
-        {% endif %}
+          </video>
+          {% endif %}
+        </div>
+      </div>
     </div>
     {% empty %}
-    <p>Aucune méditation disponible pour le moment.</p>
+    <p class="text-center">Aucune méditation disponible pour le moment.</p>
     {% endfor %}
+  </div>
 {% endblock %}
