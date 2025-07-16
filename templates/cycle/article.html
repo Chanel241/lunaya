@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ topic|title }}{% endblock %}
+{% block content %}
+  <h2>{{ topic|title }} <i class="fa fa-book"></i></h2>
+  <p class="text-center mb-4">Informations adaptées à votre phase du cycle.</p>
+  <div class="card mb-4">
+    <div class="card-body">
+      <p>{{ content|safe }}</p>
+    </div>
+  </div>
+  <div class="text-center mt-3">
+    <a href="{% url 'cycle_tracker' %}" class="btn">Retour au suivi</a>
+  </div>
+{% endblock %}

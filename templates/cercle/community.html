@@ -2,32 +2,52 @@
 {% load static %}
 {% block title %}Cercle Lunaire{% endblock %}
 {% block content %}
-  <h2>Cercle Lunaire <i class="fa fa-users"></i></h2>
-  <p class="text-center mb-4">Partagez vos expériences et connectez-vous avec d'autres femmes.</p>
-  {% if messages %}
-  <div class="messages text-center">
-    {% for message in messages %}
-    <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: #d88c9a;">{{ message }}</p>
-    {% endfor %}
+  <div id="initial-content">
+    <h2>Cercle Lunaire <i class="fa fa-users"></i></h2>
+    <p class="text-center mb-4">Partagez vos expériences et connectez-vous avec d'autres femmes.</p>
+    {% if messages %}
+    <div class="messages text-center">
+      {% for message in messages %}
+      <p{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: #d88c9a;">{{ message }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <form method="post" action="{% url 'community' %}" class="form-group text-center">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" style="background-color: #ff0000; color: white; padding: 0.75rem 1.5rem; border-radius: 12px; border: none;">Publier</button>
+    </form>
+    <div class="text-center mt-4">
+      <button id="show-posts-btn" class="btn btn-sm" style="background-color: #007bff; color: white;">Voir les publications</button>
+    </div>
   </div>
-  {% endif %}
-  <form method="post" action="{% url 'community' %}" class="form-group text-center">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Publier</button>
-  </form>
-  <div class="row">
-    {% for post in posts %}
-    <div class="col-md-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <p><i class="fas fa-user-circle" style="color: #8b5e83;"></i> <strong>{{ post.user.username }}</strong> - {{ post.created_at|date:"d/m/Y H:i" }}</p>
-          <p class="card-text">{{ post.content }}</p>
+  <div id="posts-view" style="display: none; text-align: center;">
+    <div class="row justify-content-center">
+      {% for post in posts %}
+      <div class="col-md-12 mb-4">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <div class="card-body">
+            <p><i class="fas fa-user-circle" style="color: #8b5e83;"></i> <strong>{{ post.user.username }}</strong> - {{ post.created_at|date:"d/m/Y H:i" }}</p>
+            <p class="card-text">{{ post.content }}</p>
+          </div>
         </div>
       </div>
+      {% empty %}
+      <p class="text-center">Aucun message dans le cercle pour le moment.</p>
+      {% endfor %}
     </div>
-    {% empty %}
-    <p class="text-center">Aucun message dans le cercle pour le moment.</p>
-    {% endfor %}
+    <button id="back-btn" class="btn btn-sm" style="background-color: #007bff; color: white; margin: 2rem auto; display: block;">Retour</button>
   </div>
+
+  <script>
+    document.getElementById('show-posts-btn').addEventListener('click', function() {
+      document.getElementById('initial-content').style.display = 'none';
+      document.getElementById('posts-view').style.display = 'block';
+    });
+
+    document.getElementById('back-btn').addEventListener('click', function() {
+      document.getElementById('initial-content').style.display = 'block';
+      document.getElementById('posts-view').style.display = 'none';
+    });
+  </script>
 {% endblock %}

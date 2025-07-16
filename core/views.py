@@ -1,12 +1,32 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required  
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import SignUpForm
+from .forms import SignUpForm, ProfileForm
 from .models import Profile
 from django.utils import timezone
 from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.views import PasswordResetView
+from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import json
 
+class CustomPasswordResetView(PasswordResetView):
+    success_url = reverse_lazy('password_reset_done')
+    email_template_name = 'registration/password_reset_email.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['domain'] = settings.DOMAIN
+        context['protocol'] = 'https'
+        context['site_name'] = settings.SITE_NAME
+        context['uidb64'] = kwargs.get('uidb64', '')  
+        context['token'] = kwargs.get('token', '')   
+        return context
+    
 def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -36,10 +56,10 @@ def login_view(request):
             next_url = request.POST.get('next')
             if next_url:
                 try:
-                    return redirect(next_url)  # Redirige vers l'URL demandée
+                    return redirect(next_url)  
                 except Exception:
-                    pass  # Passe si l'URL est invalide
-            return redirect(reverse('home'))  # Redirige vers home par défaut
+                    pass 
+            return redirect(reverse('home'))  
         else:
             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
@@ -71,3 +91,30 @@ def home(request):
 def profile(request):
     profile = Profile.objects.filter(user=request.user).first() if request.user.is_authenticated else None
     return render(request, 'core/profile.html', {'profile': profile})
+
+@login_required  
+def profile_edit(request):
+    if not request.user.is_authenticated:
+        return redirect('login')  
+    profile = request.user.profile
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'core/profile.html', {'profile': profile, 'editing': True, 'form': form})
+
+@require_POST
+@csrf_exempt  
+def toggle_offline_mode(request):
+    if request.method == 'POST':
+        try:
+            data = request.POST if request.POST else json.loads(request.body.decode('utf-8'))
+            offline_mode = data.get('offline_mode', False)
+            request.session['offline_mode'] = bool(offline_mode)
+            return JsonResponse({'success': True})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
+    return JsonResponse({'success': False}, status=400)

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Ajouter une méditation - Lunaya{% endblock %}
+{% block content %}
+  <div style="margin-top: 2rem; display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 2rem);">
+    <div class="card" style="max-width: 600px; width: 100%; background-color: #fff; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; padding: 1rem;">
+      <div class="card-body">
+        <h2 style="text-align: center; color: #8b5e83;">Ajouter une méditation <i class="fa fa-plus" style="color: #8b5e83;"></i></h2>
+        <form method="post" enctype="multipart/form-data" style="margin-top: 1rem;">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" style="background-color: #ff0000; color: white; padding: 0.75rem 1.5rem; border-radius: 12px; border: none; display: block; margin: 1rem auto; transition: background-color 0.3s ease;">Soumettre</button>
+        </form>
+        {% if messages %}
+          <div class="messages text-center" style="color: #d88c9a; margin-top: 1rem;">
+            {% for message in messages %}
+              <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

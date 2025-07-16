@@ -2,22 +2,69 @@
 {% load static %}
 {% block title %}Profil{% endblock %}
 {% block content %}
-  <h2>Mon Profil <i class="fa fa-user"></i></h2>
-  <p class="text-center mb-4">Gérez vos informations personnelles et vos préférences.</p>
-  {% if profile %}
-  <div class="card">
-    <div class="card-body">
-      <h3 class="card-title" style="font-size: 1.5em;">{{ profile.user.username }}</h3>
-      <p><strong>Date de naissance</strong> : {{ profile.birthdate|date:"d/m/Y" }}</p>
-      <p><strong>Langue</strong> : {{ profile.language|default:"Français" }}</p>
-      <p><strong>Dernières règles</strong> : {{ profile.last_period|date:"d/m/Y" }}</p>
-      <div class="d-flex justify-content-center gap-3 mt-3">
-        <button onclick="alert('Mode hors ligne activé (simulation).')" class="btn">Mode hors ligne</button>
-        <button onclick="alert('Redirection vers Airtel Money/Moov pour premium.')" class="btn">Passer à Premium</button>
+  <div style="margin-top: 2rem;"> 
+    <h2>Mon Profil <i class="fa fa-user"></i></h2>
+    <p class="text-center mb-4">Gérez vos informations personnelles et vos préférences.</p>
+    {% if profile %}
+    <div class="card">
+      <div class="card-body">
+        <h3 class="card-title" style="font-size: 1.5em;"><span style="color: purple; font-weight: bold; text-transform: uppercase;">{{ profile.user.username }}</span></h3>
+        {% if not editing %}
+          <p><strong>Date de naissance</strong> : {{ profile.birthdate|date:"d/m/Y" }}</p>
+          <p><strong>Langue</strong> : {{ profile.language|default:"Français" }}</p>
+          <p><strong>Dernières règles</strong> : {{ profile.last_period|date:"d/m/Y" }}</p>
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <button id="offline-mode-btn" class="btn" style="background-color: #007bff; color: white; transition: background-color 0.3s ease;">
+              {% if request.session.offline_mode %}Désactiver mode hors ligne{% else %}Activer mode hors ligne{% endif %}
+            </button>
+            <button id="edit-profile-btn" class="btn" style="background-color: #ff0000; color: white; transition: background-color 0.3s ease;">Modifier le profil</button>
+          </div>
+          {% if request.session.offline_mode %}
+            <p style="text-align: center; color: #28a745; margin-top: 1rem;">Mode hors ligne activé. Certaines fonctionnalités peuvent être limitées.</p>
+          {% endif %}
+        {% else %}
+          <form method="post" style="margin-top: 1rem;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex justify-content-center gap-3 mt-3">
+              <button type="submit" class="btn" style="background-color: #28a745; color: white; transition: background-color 0.3s ease;">Enregistrer</button>
+              <a href="{% url 'profile' %}" class="btn" style="background-color: #dc3545; color: white; transition: background-color 0.3s ease;">Annuler</a>
+            </div>
+          </form>
+        {% endif %}
       </div>
     </div>
+    {% else %}
+    <p class="text-center">Veuillez vous connecter pour voir votre profil.</p>
+    {% endif %}
   </div>
-  {% else %}
-  <p class="text-center">Veuillez vous connecter pour voir votre profil.</p>
-  {% endif %}
+  <script>
+    // Définir la variable offlineMode après rendu par Django
+    const offlineMode = "{{ request.session.offline_mode|default:'false' }}".toLowerCase() === 'true';
+    const offlineModeBtn = document.getElementById('offline-mode-btn');
+    offlineModeBtn.textContent = offlineMode ? 'Désactiver mode hors ligne' : 'Activer mode hors ligne';
+
+    document.getElementById('offline-mode-btn').addEventListener('click', function() {
+      const isOffline = !offlineMode;
+      fetch('/toggle-offline-mode/', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ offline_mode: isOffline }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          location.reload();
+        }
+      })
+      .catch(error => console.error('Erreur:', error));
+    });
+
+    document.getElementById('edit-profile-btn').addEventListener('click', function() {
+      window.location.href = "{% url 'profile_edit' %}";
+    });
+  </script>
 {% endblock %}

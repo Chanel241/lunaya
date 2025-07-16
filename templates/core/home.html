@@ -6,11 +6,11 @@
     <h2>Bienvenue sur Lunaya 🌙</h2>
     <img src="{% static 'images/lunaya-hero.jpg' %}" alt="Lunaya Hero" class="img-fluid rounded mb-4" style="max-width: 100%; height: auto; max-height: 450px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);" loading="lazy">
     <p class="lead">Lunaya est votre sanctuaire numérique, créé pour célébrer l’énergie féminine à travers un suivi de cycle, des méditations apaisantes, des conseils bien-être, un cercle communautaire vibrant, et un horoscope quotidien inspirant.</p>
-    <div class="card starry-card" style="min-height: 300px; max-height: 400px; overflow: hidden;"> <!-- Réduit la hauteur -->
+    <div class="card starry-card" style="min-height: 300px; max-height: 400px; overflow: hidden;"> 
       <div class="card-body">
         <h3 class="card-title">Découvrez l’univers Lunaya</h3>
         <p>Explorez des méditations guidées, suivez votre cycle avec précision, partagez vos expériences dans notre Cercle Lunaire, et laissez-vous guider par les étoiles.</p>
-        <a href="{% url 'meditations_list' %}" class="btn sparkle">Commencer maintenant</a>
+        <a href="{% url 'login' %}" class="btn sparkle">Commencer maintenant</a> 
       </div>
     </div>
     <div class="affirmation typewriter">“Lunaya, votre compagne pour une vie en harmonie avec votre essence féminine.”</div>
@@ -24,11 +24,11 @@
       margin-bottom: 2rem;
     }
     .card {
-      margin: 1rem auto; /* Garde la marge */
-      max-width: 650px; /* Garde */
+      margin: 1rem auto; 
+      max-width: 650px; 
     }
     .card-title {
-      font-size: 1.5rem; /* Garde */
+      font-size: 1.5rem; 
       margin-bottom: 1rem;
     }
     .sparkle {
@@ -85,7 +85,7 @@
     @media (max-width: 768px) {
       .img-fluid {
         max-width: 100%;
-        max-height: 350px; /* Garde */
+        max-height: 350px; 
       }
       .lead {
         font-size: 1rem;
@@ -104,7 +104,7 @@
         font-size: 0.9rem;
       }
       .starry-card {
-        min-height: 250px; /* Réduit sur mobile */
+        min-height: 250px; 
         max-height: 350px;
       }
     }
@@ -116,10 +116,10 @@
         font-size: 1.1rem;
       }
       .img-fluid {
-        max-height: 250px; /* Garde */
+        max-height: 250px; 
       }
       .starry-card {
-        min-height: 200px; /* Réduit encore sur petit écran */
+        min-height: 200px; 
         max-height: 300px;
       }
     }

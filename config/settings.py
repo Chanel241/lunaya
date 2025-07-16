@@ -6,11 +6,11 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')  # Utilise une variable d'environnement
+SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')  
 
-CSRF_TRUSTED_ORIGINS = ['https://45e5c051f087.ngrok-free.app']  # Autorise toutes les URLs ngrok
-DEBUG = True  # Garde pour développement, désactive en production
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '45e5c051f087.ngrok-free.app']  # Inclut toutes les URLs ngrok
+CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']  
+DEBUG = True  
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '370902762468.ngrok-free.app']  
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -84,7 +84,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-LOGIN_URL = '/login/'  # Pointe vers login_view
+LOGIN_URL = '/login/'  
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -92,6 +92,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Limite de taille des fichiers uploadés (optionnel, en octets)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -113,8 +116,29 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'meditations.views': {  
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
+
+# Paramètres d'e-mail pour SMTP avec Gmail
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'chanelbirimbi@gmail.com'
+EMAIL_HOST_PASSWORD = 'hdtccxsooiycgdiu'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+DEFAULT_FROM_EMAIL = 'chanelbirimbi@gmail.com'
+# Paramètres pour les URLs dans les e-mails
+DOMAIN = '370902762468.ngrok-free.app'  
+SITE_NAME = 'Lunaya'
+SECURE_SSL_REDIRECT = False
+USE_X_FORWARDED_HOST = True
+# Forcer l'URL de base pour les e-mails
+BASE_URL = 'https://370902762468.ngrok-free.app'
 
 CSRF_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production
 SESSION_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production

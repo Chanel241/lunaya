@@ -2,12 +2,11 @@
 {% load static %}
 {% block title %}Mon Cycle{% endblock %}
 {% block content %}
-  <h2>Mon Cycle <i class="fa fa-calendar"></i></h2>
-  <p class="text-center mb-4">Suivez votre cycle et recevez des conseils personnalisés.</p>
+  <!-- Section du cycle actuel (visible par défaut) -->
   {% if cycle_info %}
-  <div class="card mb-4">
-    <div class="card-body">
-      <h3 class="card-title" style="font-size: 1.5em;">Cycle Actuel</h3>
+  <div id="currentCycleSection" class="card mb-4 centered-card" style="border-color: {{ cycle_info.color|default:'gray' }}; opacity: 1; transition: opacity 0.5s ease;">
+    <div class="card-body text-center">
+      <h3 class="card-title" style="font-size: 1.5em; color: {{ cycle_info.color|default:'black' }};">Cycle Actuel</h3>
       <p><strong>Jour du cycle</strong> : {{ cycle_info.cycle_day }}</p>
       <p><strong>Phase actuelle</strong> : {{ cycle_info.phase }}</p>
       {% if cycle_info.ovulation_date %}
@@ -16,35 +15,203 @@
       {% if cycle_info.next_period %}
       <p><strong>Prochaines règles estimées</strong> : {{ cycle_info.next_period|date:"d/m/Y" }}</p>
       {% endif %}
-      <p><strong>Conseil</strong> : Infusion d’hibiscus et repos léger.</p>
+      <p><strong>Symptômes</strong> :</p>
+      <ul class="text-center">
+        <li>Douleur : {{ cycles.0.cycle.pain|default:"Non noté" }}/10</li>
+        <li>Humeur : {{ cycles.0.cycle.mood|default:"Non noté" }}/10</li>
+        <li>Appétit : {{ cycles.0.cycle.appetite|default:"Non noté" }}/10</li>
+        <li>Énergie : {{ cycles.0.cycle.energy|default:"Non noté" }}/10</li>
+        <li>Libido : {{ cycles.0.cycle.libido|default:"Non noté" }}/10</li>
+      </ul>
+      <div class="recommended-article">
+        <p><strong>Article recommandé</strong> <a href="#" id="menstrualHealthLink" class="no-background-link" style="background: none !important; color: #0000ff !important;">Santé Menstruelle</a></p>
+      </div>
+    </div>
+  </div>
+  <!-- Modal pour les données statiques -->
+  <div id="menstrualHealthModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+    <div class="modal-content">
+      <h3 style="color: #4b2e4a; font-weight: bold;">Conseils pour la Santé Menstruelle</h3>
+      <ul style="text-align: left; padding-left: 20px;">
+        <li>Restez hydratée pour réduire les crampes.</li>
+        <li>Utilisez des serviettes ou tampons adaptés.</li>
+        <li>Pratiquez une activité légère comme le yoga.</li>
+        <li>Consultez un médecin en cas de douleur intense.</li>
+      </ul>
+      <button id="closeModalBtn" style="background-color: #ff0000; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 10px;">Fermer</button>
     </div>
   </div>
   {% else %}
-  <p class="text-center">Aucun cycle enregistré. Ajoutez une entrée ci-dessous.</p>
+  <p class="text-center">Aucun cycle enregistré.</p>
   {% endif %}
-  <h3>Ajouter une entrée</h3>
-  <form method="post" action="{% url 'cycle_add' %}" class="form-group">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Enregistrer</button>
-  </form>
-  <h3>Historique</h3>
-  <div class="row">
-    {% for entry in cycles %}
-    <div class="col-md-6 mb-4">
-      <div class="card">
-        <div class="card-body">
-          <h3 class="card-title" style="font-size: 1.5em;">{{ entry.cycle.start_date|date:"d/m/Y" }}</h3>
-          <p><strong>Phase</strong> : {{ entry.phase }} (Jour {{ entry.cycle_day }})</p>
-          {% if entry.cycle.end_date %}
-          <p><strong>Fin</strong> : {{ entry.cycle.end_date|date:"d/m/Y" }}</p>
-          {% endif %}
-          <p><strong>Notes</strong> : {{ entry.cycle.notes|default:"Aucune note" }}</p>
-        </div>
+
+  <!-- Boutons de contrôle -->
+  <div id="controlButtons" class="text-center mb-4">
+    <button id="addEntryBtn" class="btn mx-2" style="background-color: #ff0000; color: white; transition: transform 0.3s ease, box-shadow 0.3s ease;">Ajouter une entrée</button>
+    <button id="historyBtn" class="btn mx-2" style="background-color: #0000ff; color: white; transition: transform 0.3s ease, box-shadow 0.3s ease;">Historique</button>
+  </div>
+
+  <!-- Section du formulaire (masquée par défaut) -->
+  <div id="addEntrySection" class="form-section" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+    <h3 style="color: black; font-weight: bold; text-align: center; margin-top: 20px; text-transform: uppercase;">AJOUTER UNE ENTRÉE</h3>
+    <div class="text-center">
+      <div class="card" style="border-color: {{ cycle_info.color|default:'gray' }}; padding: 20px; border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease; max-width: 500px; margin: 0 auto;">
+        <form method="post" action="{% url 'cycle_add' %}" class="centered-form">
+          {% csrf_token %}
+          <!-- Rendu personnalisé pour centrer labels et champs -->
+          <div class="form-group">
+            <label for="{{ form.start_date.id_for_label }}">Date de début:</label>
+            <div>{{ form.start_date }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.end_date.id_for_label }}">Date de fin:</label>
+            <div>{{ form.end_date }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.cycle_length.id_for_label }}">Durée du cycle:</label>
+            <div>{{ form.cycle_length }}
+              <small style="display: block; color: #666; margin-top: 5px; text-align: center;">Durée moyenne (21-35 jours)</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.notes.id_for_label }}">Notes:</label>
+            <div>{{ form.notes }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.pain.id_for_label }}">Douleur:</label>
+            <div>{{ form.pain }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.mood.id_for_label }}">Humeur:</label>
+            <div>{{ form.mood }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.appetite.id_for_label }}">Appétit:</label>
+            <div>{{ form.appetite }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.energy.id_for_label }}">Énergie:</label>
+            <div>{{ form.energy }}</div>
+          </div>
+          <div class="form-group">
+            <label for="{{ form.libido.id_for_label }}">Libido:</label>
+            <div>{{ form.libido }}</div>
+          </div>
+          <div class="text-center mt-3">
+            <button type="submit" style="background-color: {{ cycle_info.color|default:'gray' }}; color: white; margin-right: 10px; border-radius: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;">Enregistrer</button>
+            <a href="{% url 'cycle_tracker' %}" class="btn btn-secondary" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">Retour au suivi</a>
+          </div>
+        </form>
       </div>
     </div>
-    {% empty %}
-    <p class="text-center">Aucune entrée enregistrée. Ajoutez vos dates ci-dessus.</p>
-    {% endfor %}
   </div>
+
+  <!-- Section de l'historique (masquée par défaut) -->
+  <div id="historySection" class="form-section" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+    <h3 style="color: black; font-weight: bold; margin-top: 20px; text-align: center; text-transform: uppercase;">HISTORIQUE</h3>
+    <div class="text-center mb-3">
+      <form method="post" action="{% url 'cycle_clear_history' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûre de vouloir supprimer tout l\'historique ? Cette action est irréversible.');" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">Supprimer tout l'historique</button>
+      </form>
+    </div>
+    <div class="row justify-content-center">
+      {% for entry in cycles %}
+      <div class="col-md-6 col-sm-12 mb-4">
+        <div class="card" style="border-color: {{ entry.color|default:'gray' }}; margin: 0 auto; max-width: 400px; position: relative;">
+          <div class="card-body">
+            <h3 class="card-title" style="font-size: 1.5em; color: {{ entry.color|default:'black' }};">{{ entry.cycle.start_date|date:"d/m/Y" }}</h3>
+            <p><strong>Phase</strong> : {{ entry.phase }} (Jour {{ entry.cycle_day }})</p>
+            {% if entry.cycle.end_date %}
+            <p><strong>Fin</strong> : {{ entry.cycle.end_date|date:"d/m/Y" }}</p>
+            {% endif %}
+            <p><strong>Symptômes</strong> :</p>
+            <ul>
+              <li>Douleur : {{ entry.cycle.pain|default:"Non noté" }}/10</li>
+              <li>Humeur : {{ entry.cycle.mood|default:"Non noté" }}/10</li>
+              <li>Appétit : {{ entry.cycle.appetite|default:"Non noté" }}/10</li>
+              <li>Énergie : {{ entry.cycle.energy|default:"Non noté" }}/10</li>
+              <li>Libido : {{ entry.cycle.libido|default:"Non noté" }}/10</li>
+            </ul>
+            <p><strong>Notes</strong> : {{ entry.cycle.notes|default:"Aucune note" }}</p>
+            <div class="button-group">
+              <form method="post" action="{% url 'cycle_delete_entry' entry.cycle.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûre de vouloir supprimer cet enregistrement ? Cette action est irréversible.');" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">Supprimer</button>
+              </form>
+              <a href="{% url 'cycle_tracker' %}" class="btn btn-secondary btn-sm" style="transition: transform 0.3s ease, box-shadow 0.3s ease; margin-left: 10px;">Retour au suivi</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-center">Aucune entrée enregistrée.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- JavaScript pour gérer les boutons et animations -->
+  <script>
+    document.getElementById('addEntryBtn').addEventListener('click', function() {
+      document.getElementById('currentCycleSection').style.display = 'none';
+      document.getElementById('addEntrySection').style.display = 'block';
+      document.getElementById('controlButtons').style.display = 'none';
+      setTimeout(() => document.getElementById('addEntrySection').style.opacity = '1', 10);
+      document.getElementById('historySection').style.display = 'none';
+    });
+
+    document.getElementById('historyBtn').addEventListener('click', function() {
+      document.getElementById('currentCycleSection').style.display = 'none';
+      document.getElementById('addEntrySection').style.display = 'none';
+      document.getElementById('historySection').style.display = 'block';
+      document.getElementById('controlButtons').style.display = 'none';
+      setTimeout(() => document.getElementById('historySection').style.opacity = '1', 10);
+    });
+
+    // Afficher les boutons au retour à la section principale
+    document.querySelectorAll('.btn-secondary').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.getAttribute('href') === "{% url 'cycle_tracker' %}") {
+          document.getElementById('controlButtons').style.display = 'block';
+          document.getElementById('currentCycleSection').style.display = 'block';
+          setTimeout(() => document.getElementById('currentCycleSection').style.opacity = '1', 10);
+          document.getElementById('addEntrySection').style.display = 'none';
+          document.getElementById('historySection').style.display = 'none';
+        }
+      });
+    });
+
+    // Ajout d'effets au survol des boutons et du card
+    document.querySelectorAll('.btn, .card').forEach(element => {
+      element.addEventListener('mouseover', function() {
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+      });
+      element.addEventListener('mouseout', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '0 0 0 rgba(0, 0, 0, 0)';
+      });
+    });
+
+    // Gestion du modal pour Santé Menstruelle
+    const menstrualHealthLink = document.getElementById('menstrualHealthLink');
+    const menstrualHealthModal = document.getElementById('menstrualHealthModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    menstrualHealthLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      menstrualHealthModal.style.display = 'block';
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+      menstrualHealthModal.style.display = 'none';
+    });
+
+    // Fermer le modal si on clique en dehors
+    window.addEventListener('click', function(e) {
+      if (e.target === menstrualHealthModal) {
+        menstrualHealthModal.style.display = 'none';
+      }
+    });
+  </script>
 {% endblock %}

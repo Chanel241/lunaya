@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ tip.title }}{% endblock %}
+{% block content %}
+  <div style="margin-top: 2rem;">
+    <h2>{{ tip.title }} <i class="fa fa-leaf"></i></h2>
+    <div class="card text-center">
+      <div class="card-body">
+        <p class="card-text"><strong>Description :</strong> {{ tip.description }}</p>
+        {% if tip.steps %}
+          <p class="card-text"><strong>Étapes :</strong> {{ tip.steps }}</p>
+        {% endif %}
+        {% if tip.duration %}
+          <p class="card-text"><strong>Durée :</strong> {{ tip.duration }}</p>
+        {% endif %}
+        {% if tip.benefits %}
+          <p class="card-text"><strong>Bienfaits :</strong> {{ tip.benefits }}</p>
+        {% endif %}
+        <a href="{% url 'wellness_list' %}" class="btn btn-sm pulse">Retour</a>
+      </div>
+    </div>
+  </div>
+  <style>
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+  </style>
+{% endblock %}

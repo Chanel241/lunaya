@@ -2,46 +2,58 @@
 {% load static %}
 {% block title %}Conseils de Bien-Être{% endblock %}
 {% block content %}
-  <h2>Conseils de Bien-Être <i class="fa fa-leaf"></i></h2>
-  <p class="text-center mb-5">Découvrez des pratiques simples pour nourrir votre corps et votre esprit.</p>
-  <div class="row">
-    {% for tip in tips %}
-    <div class="col-md-4 mb-4">
-      <div class="card" role="article" aria-labelledby="tip-{{ tip.id }}">
-        <div class="card-body text-center">
-          {% if tip.type == "Relaxation" %}
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
-              <path d="M12 21a9 9 0 100-18 9 9 0 000 18z"/>
-              <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
-            </svg>
-          {% elif tip.type == "Nutrition" %}
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
-              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-              <path d="M12 16v-4m0 0v-4m0 4h4m-4 0H8"/>
-            </svg>
-          {% else %}
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
-              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-              <path d="M12 16l-4-4h8l-4 4z"/>
-            </svg>
-          {% endif %}
-          <h3 class="card-title" id="tip-{{ tip.id }}" style="font-size: 1.6rem;">{{ tip.title }}</h3>
-          <p class="card-text">{{ tip.description }}</p>
-          <a href="#" class="btn btn-sm pulse">En savoir plus</a>
+  <div style="margin-top: 2rem;"> 
+    <h2>Conseils de Bien-Être <i class="fa fa-leaf"></i></h2>
+    <p class="text-center mb-5">Découvrez des pratiques simples pour nourrir votre corps et votre esprit.</p>
+    <div class="row">
+      {% for tip in tips %}
+      <div class="col-md-4 mb-4">
+        <div class="card" role="article" aria-labelledby="tip-{{ tip.id }}">
+          <div class="card-body text-center">
+            {% if tip.type|lower == "relaxation" %}
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
+                <path d="M12 21a9 9 0 100-18 9 9 0 000 18z"/>
+                <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+              </svg>
+            {% elif tip.type|lower == "nutrition" %}
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="M12 16v-4m0 0v-4m0 4h4m-4 0H8"/>
+              </svg>
+            {% elif tip.type|lower == "yoga" %}
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="M12 16l-4-4h8l-4 4z"/>
+              </svg>
+            {% elif tip.type|lower == "tea" %}
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" class="mb-3">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="M12 16v-4m0 0v-4m0 4h4m-4 0H8"/>
+              </svg>
+            {% elif tip.type|lower == "méditation guidée" %}
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#d4a373" stroke-width="2" class="mb-3">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8v4m0 0l-2 2m2-2l2 2"/>
+              </svg>
+            {% endif %}
+            <h3 class="card-title" id="tip-{{ tip.id }}" style="font-size: 1.6rem;">{{ tip.title }}</h3>
+            <p class="card-text">{{ tip.description }}</p>
+            <a href="{% url 'wellness_detail' tip.id %}" class="btn btn-sm pulse" style="background-color: #007bff; color: white;">En savoir plus</a> <!-- Bouton avec fond bleu -->
+          </div>
         </div>
       </div>
+      {% empty %}
+      <p class="text-center">Aucun conseil disponible pour le moment.</p>
+      {% endfor %}
     </div>
-    {% empty %}
-    <p class="text-center">Aucun conseil disponible pour le moment.</p>
-    {% endfor %}
+    <style>
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+      }
+    </style>
   </div>
-  <style>
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-  </style>
 {% endblock %}

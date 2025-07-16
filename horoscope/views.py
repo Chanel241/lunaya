@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Horoscope
 from datetime import datetime, date
@@ -25,6 +25,28 @@ def horoscope_view(request):
     try:
         horoscope = Horoscope.objects.filter(sign=sign, date=today).first()
         if horoscope:
+            # Forcer la mise à jour avec les messages personnalisés
+            sign_choices = dict(Horoscope._meta.get_field('sign').choices)
+            sign_fr = sign_choices.get(sign, sign.capitalize())
+            fallback_messages = {
+                'aries': f"{sign_fr}, une journée remplie d’énergie vous attend !",
+                'taurus': f"{sign_fr}, profitez d’une journée de stabilité et de confort !",
+                'gemini': f"{sign_fr}, une journée de communication et d’idées nouvelles !",
+                'cancer': f"{sign_fr}, prenez soin de vous aujourd’hui avec douceur !",
+                'leo': f"{sign_fr}, brillez aujourd’hui avec confiance et charisme !",
+                'virgo': f"{sign_fr}, une journée de clarté et d’organisation vous attend !",
+                'libra': f"{sign_fr}, trouvez l’équilibre dans vos relations aujourd’hui !",
+                'scorpio': f"{sign_fr}, explorez votre profondeur intérieure aujourd’hui !",
+                'sagittarius': f"{sign_fr}, partez à l’aventure avec optimisme aujourd’hui !",
+                'capricorn': f"{sign_fr}, une journée de succès et de discipline vous attend !",
+                'aquarius': f"{sign_fr}, laissez votre créativité s’exprimer aujourd’hui !",
+                'pisces': f"{sign_fr}, plongez dans vos rêves avec sérénité aujourd’hui !"
+            }
+            new_message = fallback_messages.get(sign, f"{sign_fr}, une journée lumineuse vous attend !")
+            if horoscope.message != new_message:  
+                horoscope.message = new_message
+                horoscope.save()
+                logger.info(f"Updated horoscope message for {sign} on {today}: {new_message[:50]}...")
             logger.info(f"Horoscope found in database for {sign} on {today}: {horoscope.message[:50]}...")
     except Exception as e:
         logger.error(f"Database error for {sign}: {str(e)}")
@@ -36,9 +58,9 @@ def horoscope_view(request):
                 logger.error("No PROKARELA_ACCESS_TOKEN found")
                 error_message = "Configuration de l’API manquante."
                 raise ValueError("Missing PROKARELA_ACCESS_TOKEN")
-            logger.info(f"Fetching horoscope from Prokerala API for sign: {sign}")
+            logger.info(f"Fetching horoscope from Prokarela API for sign: {sign}")
             response = requests.get(
-                f'https://api.prokerala.com/v2/horoscope/daily?sign={sign}&datetime={encoded_datetime}',
+                f'https://api.prokarela.com/v2/horoscope/daily?sign={sign}&datetime={encoded_datetime}',
                 timeout=5,
                 headers={
                     'User-Agent': 'Lunaya/1.0',
@@ -47,7 +69,7 @@ def horoscope_view(request):
             )
             response.raise_for_status()
             data = response.json()
-            logger.debug(f"Prokerala API response: {data}")
+            logger.debug(f"Prokarela API response: {data}")
 
             if data.get('status') == 'ok' and 'daily_prediction' in data.get('data', {}):
                 prediction = data['data']['daily_prediction']['prediction']
@@ -64,20 +86,38 @@ def horoscope_view(request):
                     logger.warning(f"Translation empty for {sign}")
                     error_message = "Erreur lors de la traduction."
             else:
-                logger.warning(f"No valid prediction in Prokerala response for {sign}: {data}")
+                logger.warning(f"No valid prediction in Prokarela response for {sign}: {data}")
                 error_message = "Aucun horoscope disponible via l’API."
         except requests.RequestException as e:
-            logger.error(f"Prokerala API request failed for {sign}: {str(e)}")
+            logger.error(f"Prokarela API request failed for {sign}: {str(e)}")
             error_message = f"Impossible de se connecter à l’API: {str(e)}"
         except Exception as e:
             logger.error(f"Unexpected error for {sign}: {str(e)}")
             error_message = "Erreur inattendue."
 
     if not horoscope and error_message:
+        sign_choices = dict(Horoscope._meta.get_field('sign').choices)
+        sign_fr = sign_choices.get(sign, sign.capitalize())
+        logger.debug(f"Translated sign for {sign}: {sign_fr}") 
+        fallback_messages = {
+            'aries': f"{sign_fr}, une journée remplie d’énergie vous attend !",
+            'taurus': f"{sign_fr}, profitez d’une journée de stabilité et de confort !",
+            'gemini': f"{sign_fr}, une journée de communication et d’idées nouvelles !",
+            'cancer': f"{sign_fr}, prenez soin de vous aujourd’hui avec douceur !",
+            'leo': f"{sign_fr}, brillez aujourd’hui avec confiance et charisme !",
+            'virgo': f"{sign_fr}, une journée de clarté et d’organisation vous attend !",
+            'libra': f"{sign_fr}, trouvez l’équilibre dans vos relations aujourd’hui !",
+            'scorpio': f"{sign_fr}, explorez votre profondeur intérieure aujourd’hui !",
+            'sagittarius': f"{sign_fr}, partez à l’aventure avec optimisme aujourd’hui !",
+            'capricorn': f"{sign_fr}, une journée de succès et de discipline vous attend !",
+            'aquarius': f"{sign_fr}, laissez votre créativité s’exprimer aujourd’hui !",
+            'pisces': f"{sign_fr}, plongez dans vos rêves avec sérénité aujourd’hui !"
+        }
+        message = fallback_messages.get(sign, f"{sign_fr}, une journée lumineuse vous attend !")
         horoscope = Horoscope.objects.create(
             sign=sign,
             date=today,
-            message=f"{sign.capitalize()}, une journée lumineuse vous attend !"
+            message=message
         )
         logger.info(f"Fallback horoscope created for {sign} on {today}")
 
