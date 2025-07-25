@@ -21,6 +21,4 @@ services:
       - key: ALLOWED_HOSTS
         value: "*.onrender.com"  # Autorise le domaine Render
     autoDeploy: true
-    regions:
-      - oregon  # Région valide, indentée correctement
     plan: free
