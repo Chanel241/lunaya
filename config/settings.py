@@ -8,9 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key-for-local')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split() 
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split()
 
-CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']    
+CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,15 +57,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+# Utiliser DATABASE_URL de Render
+import dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', 'lunaya'),
-        'USER': os.getenv('DATABASE_USER', 'lunaya_user'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', ''),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-        'PORT': os.getenv('DATABASE_PORT', '5432'),
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', ''), conn_max_age=600)
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -88,7 +83,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-LOGIN_URL = '/login/'  
+LOGIN_URL = '/login/'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
@@ -97,8 +92,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Limite de taille des fichiers uploadés (optionnel, en octets)
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -120,7 +114,7 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'meditations.views': {  
+        'meditations.views': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': True,
@@ -128,7 +122,6 @@ LOGGING = {
     },
 }
 
-# Paramètres d'e-mail pour SMTP avec Gmail
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'chanelbirimbi@gmail.com'
@@ -136,12 +129,11 @@ EMAIL_HOST_PASSWORD = 'hdtccxsooiycgdiu'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'chanelbirimbi@gmail.com'
-# Paramètres pour les URLs dans les e-mails
-DOMAIN = '370902762468.ngrok-free.app'  
+
+DOMAIN = '370902762468.ngrok-free.app'
 SITE_NAME = 'Lunaya'
 SECURE_SSL_REDIRECT = False
 USE_X_FORWARDED_HOST = True
-# Forcer l'URL de base pour les e-mails
 BASE_URL = 'https://370902762468.ngrok-free.app'
 
 CSRF_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production

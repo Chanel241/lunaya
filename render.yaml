@@ -8,7 +8,7 @@ services:
     name: lunaya
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn --bind 0.0.0.0:$PORT lunaya.wsgi:application"  # Ajuste 'lunaya_project' si nécessaire
+    startCommand: "gunicorn --bind 0.0.0.0:$PORT config.wsgi:application"  # Corrige le nom du module
     envVars:
       - key: DATABASE_URL
         fromDatabase:
