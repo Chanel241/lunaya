@@ -57,7 +57,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Utiliser DATABASE_URL de Render
 import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(default=os.getenv('DATABASE_URL', ''), conn_max_age=600)
@@ -103,19 +102,15 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
         },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-        },
     },
     'loggers': {
         'horoscope.views': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },
         'meditations.views': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
         },
