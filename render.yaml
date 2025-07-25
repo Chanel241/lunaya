@@ -22,5 +22,5 @@ services:
         value: "*.onrender.com"  # Autorise le domaine Render
     autoDeploy: true
     regions:
-      - oregon  # Région par défaut, ajuste si besoin
+      - oregon  # Région valide, indentée correctement
     plan: free
