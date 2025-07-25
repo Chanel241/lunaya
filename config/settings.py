@@ -6,11 +6,11 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key')  
+SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key-for-local')
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split() 
 
-CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']  
-DEBUG = True  
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '370902762468.ngrok-free.app']  
+CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']    
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,8 +59,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME', 'lunaya'),
+        'USER': os.getenv('DATABASE_USER', 'lunaya_user'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', ''),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.getenv('DATABASE_PORT', '5432'),
     }
 }
 
