@@ -106,6 +106,11 @@ LOGGING = {
         },
     },
     'loggers': {
+        '': {  # Log tout
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'horoscope.views': {
             'handlers': ['console'],
             'level': 'DEBUG',
