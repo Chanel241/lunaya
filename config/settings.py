@@ -8,7 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key-for-local')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-# Forcer ALLOWED_HOSTS directement
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'lunaya-production.up.railway.app']
 print(f"Loaded ALLOWED_HOSTS: {ALLOWED_HOSTS}")
 
@@ -16,7 +15,11 @@ PROKERALA_CLIENT_ID = os.getenv('PROKERALA_CLIENT_ID')
 PROKERALA_CLIENT_SECRET = os.getenv('PROKERALA_CLIENT_SECRET')
 PROKERALA_ACCESS_TOKEN = os.getenv('PROKERALA_ACCESS_TOKEN')
 
-CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']
+# Mettre à jour CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    'https://370902762468.ngrok-free.app',
+    'https://lunaya-production.up.railway.app'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
