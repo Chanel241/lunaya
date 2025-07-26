@@ -11,10 +11,5 @@
       "src": "/(.*)",
       "dest": "/config/wsgi.py"
     }
-  ],
-  "functions": {
-    "python": {
-      "includeFiles": ["config/**"]
-    }
-  }
+  ]
 }
