@@ -9,12 +9,12 @@ services:
     name: lunaya
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn config.wsgi:application"
+    startCommand: "gunicorn config.wsgi:application"  # Confirmé correct
     envVars:
       - key: PYTHON_VERSION
         value: 3.13.4
       - key: SECRET_KEY
-        value: "django-insecure-xxxxx"  # Remplace par une clé sécurisée
+        value: "django-insecure-xxxxx"  # Remplace par une clé sécurisée générée
       - key: DEBUG
         value: "True"
       - key: ALLOWED_HOSTS

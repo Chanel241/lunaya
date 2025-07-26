@@ -1,8 +1,8 @@
 import os
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.py')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')  # Corriger le chemin
 application = get_wsgi_application()
 
 # Ajout pour Vercel (variable 'app' ou 'handler')
-app = application 
+app = application
