@@ -8,7 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key-for-local')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,lunaya-production.up.railway.app').split(',')
+# Forcer ALLOWED_HOSTS directement
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'lunaya-production.up.railway.app']
 print(f"Loaded ALLOWED_HOSTS: {ALLOWED_HOSTS}")
 
 PROKERALA_CLIENT_ID = os.getenv('PROKERALA_CLIENT_ID')
