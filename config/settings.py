@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key-for-local')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split()
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,lunaya-production.up.railway.app').split(',')
 
 CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']
 
@@ -29,7 +29,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Ajouté pour gérer les statiques
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,7 +88,7 @@ LOGIN_URL = '/login/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Un seul stockage
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -106,7 +106,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        '': {  # Log tout
+        '': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': True,
@@ -138,5 +138,5 @@ SECURE_SSL_REDIRECT = False
 USE_X_FORWARDED_HOST = True
 BASE_URL = 'https://370902762468.ngrok-free.app'
 
-CSRF_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production
-SESSION_COOKIE_SECURE = False  # Désactivé pour dev avec ngrok, active en production
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
