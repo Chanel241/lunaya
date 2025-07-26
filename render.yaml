@@ -3,24 +3,19 @@ databases:
     databaseName: lunaya
     user: lunaya_user
     plan: free
+
 services:
   - type: web
     name: lunaya
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn --bind 0.0.0.0:$PORT config.wsgi:application"  # Corrige le nom du module
+    startCommand: "gunicorn config.wsgi:application"
     envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: lunaya-db
-          property: connectionString
+      - key: PYTHON_VERSION
+        value: 3.13.4
       - key: SECRET_KEY
-        generateValue: true
+        value: "django-insecure-xxxxx"  # Remplace par une clé sécurisée
       - key: DEBUG
-        value: "True"  # Pour le mode développement
+        value: "True"
       - key: ALLOWED_HOSTS
-        value: "*.onrender.com"  # Autorise le domaine Render
-      - key: PORT
-        value: "10000"  # Port par défaut de Render
-    autoDeploy: true
-    plan: free
+        value: "*.render.com"
