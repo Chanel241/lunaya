@@ -8,7 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key-for-local')
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,lunaya-production.up.railway.app').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,lunaya-production.up.railway.app').split(',')
+print(f"Loaded ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+
+PROKERALA_CLIENT_ID = os.getenv('PROKERALA_CLIENT_ID')
+PROKERALA_CLIENT_SECRET = os.getenv('PROKERALA_CLIENT_SECRET')
+PROKERALA_ACCESS_TOKEN = os.getenv('PROKERALA_ACCESS_TOKEN')
 
 CSRF_TRUSTED_ORIGINS = ['https://370902762468.ngrok-free.app']
 
@@ -59,9 +64,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 import dj_database_url
-DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL', ''), conn_max_age=600)
-}
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(default=os.getenv('DATABASE_URL', ''), conn_max_age=600)
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
