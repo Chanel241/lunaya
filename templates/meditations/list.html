@@ -73,53 +73,54 @@
     }
   </style>
   <script>
-    function playAudio(audioId) {
-      const audio = document.getElementById(audioId);
-      if (audio) {
-        if (audio.paused) {
-          audio.style.display = 'block';
-          audio.play().catch(error => {
-            console.error('Erreur de lecture pour ' + audioId + ':', error);
-            alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
-          });
-        } else {
-          audio.pause();
-          audio.currentTime = 0;
-          audio.style.display = 'none';
-        }
+  function playAudio(audioId) {
+    const audio = document.getElementById(audioId);
+    if (audio) {
+      if (audio.paused) {
+        audio.style.display = 'block';
+        audio.play().catch(error => {
+          console.error('Erreur de lecture pour ' + audioId + ':', error);
+          alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
+        });
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.style.display = 'none';
       }
     }
+  }
 
-    function toggleMeditations(type) {
-      const cards = document.querySelectorAll('.meditation-card');
-      const audioButton = document.getElementById('audio-toggle');
-      const videoButton = document.getElementById('video-toggle');
-      let isHidden = true;
+  function toggleMeditations(type) {
+    const cards = document.querySelectorAll('.meditation-card');
+    const audioButton = document.getElementById('audio-toggle');
+    const videoButton = document.getElementById('video-toggle');
+    let isHidden = true;
 
-      cards.forEach(card => {
-        const cardType = card.getAttribute('data-type');
-        if (type === 'audio' && cardType === 'audio') {
-          isHidden = card.classList.contains('hidden');
-          card.classList.toggle('hidden', !isHidden);
-          card.classList.toggle('active', isHidden);
-        } else if (type === 'video' && cardType === 'video') {
-          isHidden = card.classList.contains('hidden');
-          card.classList.toggle('hidden', !isHidden);
-          card.classList.toggle('active', isHidden);
-        }
-      });
-
-      if (type === 'audio') {
-        audioButton.textContent = isHidden ? 'Afficher les audios' : 'Masquer les audios';
-      } else if (type === 'video') {
-        videoButton.textContent = isHidden ? 'Afficher les vidéos' : 'Masquer les vidéos';
+    cards.forEach(card => {
+      const cardType = card.getAttribute('data-type');
+      if (type === 'audio' && cardType === 'audio') {
+        isHidden = card.classList.contains('hidden');
+        card.classList.toggle('hidden', !isHidden);
+        card.classList.toggle('active', isHidden);
+      } else if (type === 'video' && cardType === 'video') {
+        isHidden = card.classList.contains('hidden');
+        card.classList.toggle('hidden', !isHidden);
+        card.classList.toggle('active', isHidden);
+      } else if (type !== cardType) {
+        card.classList.add('hidden');
+        card.classList.remove('active');
       }
-    }
+    });
 
-    // Supprimer l'appel à filterMeditations non défini
-    window.onload = function() {
-      // Pas de filterMeditations, on initialise les toggles
-      toggleMeditations('audio'); // Afficher les audios par défaut
-    };
-  </script>
+    if (type === 'audio') {
+      audioButton.textContent = isHidden ? 'Afficher les audios' : 'Masquer les audios';
+    } else if (type === 'video') {
+      videoButton.textContent = isHidden ? 'Afficher les vidéos' : 'Masquer les vidéos';
+    }
+  }
+
+  window.onload = function() {
+    toggleMeditations('audio'); // Afficher les audios par défaut
+  };
+</script>
 {% endblock %}
