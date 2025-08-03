@@ -22,24 +22,24 @@
             {% if meditation.audio_file %}
             <div>
               <button onclick="playAudio('audio-{{ meditation.id }}')" class="btn btn-sm" style="background-color: #007bff; color: white; margin: 10px 0;">Jouer l'audio</button>
-              <a href="{% static meditation.audio_file.url|cut:'/media/' %}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
+              <a href="{{ meditation.audio_file.url }}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet audio ?')">Supprimer l'audio</a>
               {% endif %}
               <audio id="audio-{{ meditation.id }}" class="meditation-audio" style="width: 100%; margin: 20px auto; display: none;" preload="auto" onerror="console.error('Erreur audio pour {{ meditation.title }}:', this.error); alert('Erreur audio pour {{ meditation.title }} : vérifiez la console.');">
-                <source src="{% static meditation.audio_file.url|cut:'/media/' %}" type="audio/mpeg">
-                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{% static meditation.audio_file.url|cut:'/media/' %}" target="_blank">Lien</a></p>
+                <source src="{{ meditation.audio_file.url }}" type="audio/mpeg">
+                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{{ meditation.audio_file.url }}" target="_blank">Lien</a></p>
                 Votre navigateur ne supporte pas l’audio.
               </audio>
             </div>
             {% endif %}
             {% if meditation.video_file %}
             <div>
-              <video controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;">
-                <source src="{% static meditation.video_file.url|cut:'/media/' %}" type="video/mp4">
+              <video controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;" onerror="console.error('Erreur vidéo pour {{ meditation.title }}:', this.error); alert('Erreur vidéo pour {{ meditation.title }} : vérifiez la console.');">
+                <source src="{{ meditation.video_file.url }}" type="video/mp4">
                 Votre navigateur ne supporte pas la vidéo.
               </video>
-              <a href="{% static meditation.video_file.url|cut:'/media/' %}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
+              <a href="{{ meditation.video_file.url }}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')">Supprimer la vidéo</a>
               {% endif %}
@@ -73,56 +73,62 @@
     }
   </style>
   <script>
-  function playAudio(audioId) {
-    const audio = document.getElementById(audioId);
-    if (audio) {
-      if (audio.paused) {
-        audio.style.display = 'block';
-        audio.play().catch(error => {
-          console.error('Erreur de lecture pour ' + audioId + ':', error);
-          alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
-        });
-      } else {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.style.display = 'none';
+    function playAudio(audioId) {
+      const audio = document.getElementById(audioId);
+      if (audio) {
+        if (audio.paused) {
+          audio.style.display = 'block';
+          audio.play().catch(error => {
+            console.error('Erreur de lecture pour ' + audioId + ':', error);
+            alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
+          });
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.style.display = 'none';
+        }
       }
     }
-  }
 
-  function toggleMeditations(type) {
-    const cards = document.querySelectorAll('.meditation-card');
-    const audioButton = document.getElementById('audio-toggle');
-    const videoButton = document.getElementById('video-toggle');
-    let hasVisible = false;
+    function toggleMeditations(type) {
+      const cards = document.querySelectorAll('.meditation-card');
+      const audioButton = document.getElementById('audio-toggle');
+      const videoButton = document.getElementById('video-toggle');
+      let hasVisible = false;
 
-    cards.forEach(card => {
-      const cardType = card.getAttribute('data-type');
-      if (type === 'audio' && cardType === 'audio') {
-        const isHidden = card.classList.contains('hidden');
-        card.classList.toggle('hidden', !isHidden);
-        card.classList.toggle('active', isHidden);
-        if (!isHidden) hasVisible = true;
-      } else if (type === 'video' && cardType === 'video') {
-        const isHidden = card.classList.contains('hidden');
-        card.classList.toggle('hidden', !isHidden);
-        card.classList.toggle('active', isHidden);
-        if (!isHidden) hasVisible = true;
-      } else if (type !== cardType) {
-        card.classList.add('hidden');
-        card.classList.remove('active');
+      cards.forEach(card => {
+        const cardType = card.getAttribute('data-type');
+        if (type === 'audio' && cardType === 'audio') {
+          const isHidden = card.classList.contains('hidden');
+          card.classList.toggle('hidden', !isHidden);
+          card.classList.toggle('active', isHidden);
+          if (!isHidden) hasVisible = true;
+        } else if (type === 'video' && cardType === 'video') {
+          const isHidden = card.classList.contains('hidden');
+          card.classList.toggle('hidden', !isHidden);
+          card.classList.toggle('active', isHidden);
+          if (!isHidden) hasVisible = true;
+        } else if (type !== cardType) {
+          card.classList.add('hidden');
+          card.classList.remove('active');
+        }
+      });
+
+      if (type === 'audio') {
+        audioButton.textContent = hasVisible ? 'Masquer les audios' : 'Afficher les audios';
+      } else if (type === 'video') {
+        videoButton.textContent = hasVisible ? 'Masquer les vidéos' : 'Afficher les vidéos';
       }
-    });
-
-    if (type === 'audio') {
-      audioButton.textContent = hasVisible ? 'Masquer les audios' : 'Afficher les audios';
-    } else if (type === 'video') {
-      videoButton.textContent = hasVisible ? 'Masquer les vidéos' : 'Afficher les vidéos';
     }
-  }
 
-  window.onload = function() {
-    toggleMeditations('audio'); // Afficher les audios par défaut
-  };
-</script>
+    window.onload = function() {
+      const audioCards = document.querySelectorAll('.meditation-card[data-type="audio"]');
+      const videoCards = document.querySelectorAll('.meditation-card[data-type="video"]');
+      const hasAudio = Array.from(audioCards).some(card => !card.classList.contains('hidden'));
+      const hasVideo = Array.from(videoCards).some(card => !card.classList.contains('hidden'));
+      document.getElementById('audio-toggle').textContent = hasAudio ? 'Masquer les audios' : 'Afficher les audios';
+      document.getElementById('video-toggle').textContent = hasVideo ? 'Masquer les vidéos' : 'Afficher les vidéos';
+      toggleMeditations('audio'); // Initialise avec les audios visibles
+    };
+  </script>
 {% endblock %}
