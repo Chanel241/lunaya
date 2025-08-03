@@ -11,9 +11,9 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'lunaya-production.up.railway.app']
 print(f"Loaded ALLOWED_HOSTS: {ALLOWED_HOSTS}")
 
-PROKERALA_CLIENT_ID = os.getenv('PROKERALA_CLIENT_ID')
-PROKERALA_CLIENT_SECRET = os.getenv('PROKERALA_CLIENT_SECRET')
-PROKERALA_ACCESS_TOKEN = os.getenv('PROKERALA_ACCESS_TOKEN')
+PROKARELA_CLIENT_ID = os.getenv('PROKARELA_CLIENT_ID')
+PROKARELA_CLIENT_SECRET = os.getenv('PROKARELA_CLIENT_SECRET')
+PROKARELA_ACCESS_TOKEN = os.getenv('PROKARELA_ACCESS_TOKEN')
 
 # Mettre à jour CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
@@ -103,9 +103,10 @@ USE_TZ = True
 LOGIN_URL = '/login/'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'media']  # Inclure media pour collectstatic
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True  # Aider à gérer les fichiers avec Whitenoise
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -156,4 +157,4 @@ USE_X_FORWARDED_HOST = True
 BASE_URL = 'https://370902762468.ngrok-free.app'
 
 CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False  # Corrigé la virgule en trop
