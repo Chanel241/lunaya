@@ -152,34 +152,48 @@
 
   <!-- JavaScript pour gérer les boutons et animations -->
   <script>
-    document.getElementById('addEntryBtn').addEventListener('click', function() {
-      document.getElementById('currentCycleSection').style.display = 'none';
-      document.getElementById('addEntrySection').style.display = 'block';
-      document.getElementById('controlButtons').style.display = 'none';
-      setTimeout(() => document.getElementById('addEntrySection').style.opacity = '1', 10);
-      document.getElementById('historySection').style.display = 'none';
-    });
+    const addEntryBtn = document.getElementById('addEntryBtn');
+    const historyBtn = document.getElementById('historyBtn');
+    const currentCycleSection = document.getElementById('currentCycleSection');
+    const addEntrySection = document.getElementById('addEntrySection');
+    const historySection = document.getElementById('historySection');
+    const controlButtons = document.getElementById('controlButtons');
 
-    document.getElementById('historyBtn').addEventListener('click', function() {
-      document.getElementById('currentCycleSection').style.display = 'none';
-      document.getElementById('addEntrySection').style.display = 'none';
-      document.getElementById('historySection').style.display = 'block';
-      document.getElementById('controlButtons').style.display = 'none';
-      setTimeout(() => document.getElementById('historySection').style.opacity = '1', 10);
-    });
-
-    // Afficher les boutons au retour à la section principale
-    document.querySelectorAll('.btn-secondary').forEach(link => {
-      link.addEventListener('click', function(e) {
-        if (this.getAttribute('href') === "{% url 'cycle_tracker' %}") {
-          document.getElementById('controlButtons').style.display = 'block';
-          document.getElementById('currentCycleSection').style.display = 'block';
-          setTimeout(() => document.getElementById('currentCycleSection').style.opacity = '1', 10);
-          document.getElementById('addEntrySection').style.display = 'none';
-          document.getElementById('historySection').style.display = 'none';
-        }
+    if (addEntryBtn && currentCycleSection && addEntrySection && controlButtons) {
+      addEntryBtn.addEventListener('click', function() {
+        currentCycleSection.style.display = 'none';
+        addEntrySection.style.display = 'block';
+        controlButtons.style.display = 'none';
+        setTimeout(() => addEntrySection.style.opacity = '1', 10);
+        if (historySection) historySection.style.display = 'none';
       });
-    });
+    }
+
+    if (historyBtn && currentCycleSection && historySection && controlButtons) {
+      historyBtn.addEventListener('click', function() {
+        currentCycleSection.style.display = 'none';
+        addEntrySection.style.display = 'none';
+        historySection.style.display = 'block';
+        controlButtons.style.display = 'none';
+        setTimeout(() => historySection.style.opacity = '1', 10);
+      });
+    }
+
+    if (controlButtons) {
+      document.querySelectorAll('.btn-secondary').forEach(link => {
+        link.addEventListener('click', function(e) {
+          if (this.getAttribute('href') === "{% url 'cycle_tracker' %}") {
+            controlButtons.style.display = 'block';
+            if (currentCycleSection) currentCycleSection.style.display = 'block';
+            setTimeout(() => {
+              if (currentCycleSection) currentCycleSection.style.opacity = '1';
+            }, 10);
+            if (addEntrySection) addEntrySection.style.display = 'none';
+            if (historySection) historySection.style.display = 'none';
+          }
+        });
+      });
+    }
 
     // Ajout d'effets au survol des boutons et du card
     document.querySelectorAll('.btn, .card').forEach(element => {
@@ -198,20 +212,21 @@
     const menstrualHealthModal = document.getElementById('menstrualHealthModal');
     const closeModalBtn = document.getElementById('closeModalBtn');
 
-    menstrualHealthLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      menstrualHealthModal.style.display = 'block';
-    });
+    if (menstrualHealthLink && menstrualHealthModal && closeModalBtn) {
+      menstrualHealthLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        menstrualHealthModal.style.display = 'block';
+      });
 
-    closeModalBtn.addEventListener('click', function() {
-      menstrualHealthModal.style.display = 'none';
-    });
-
-    // Fermer le modal si on clique en dehors
-    window.addEventListener('click', function(e) {
-      if (e.target === menstrualHealthModal) {
+      closeModalBtn.addEventListener('click', function() {
         menstrualHealthModal.style.display = 'none';
-      }
-    });
+      });
+
+      window.addEventListener('click', function(e) {
+        if (e.target === menstrualHealthModal) {
+          menstrualHealthModal.style.display = 'none';
+        }
+      });
+    }
   </script>
 {% endblock %}

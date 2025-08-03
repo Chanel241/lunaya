@@ -42,29 +42,34 @@
     // Définir la variable offlineMode après rendu par Django
     const offlineMode = "{{ request.session.offline_mode|default:'false' }}".toLowerCase() === 'true';
     const offlineModeBtn = document.getElementById('offline-mode-btn');
-    offlineModeBtn.textContent = offlineMode ? 'Désactiver mode hors ligne' : 'Activer mode hors ligne';
+    if (offlineModeBtn) {
+      offlineModeBtn.textContent = offlineMode ? 'Désactiver mode hors ligne' : 'Activer mode hors ligne';
 
-    document.getElementById('offline-mode-btn').addEventListener('click', function() {
-      const isOffline = !offlineMode;
-      fetch('/toggle-offline-mode/', {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': '{{ csrf_token }}',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ offline_mode: isOffline }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          location.reload();
-        }
-      })
-      .catch(error => console.error('Erreur:', error));
-    });
+      offlineModeBtn.addEventListener('click', function() {
+        const isOffline = !offlineMode;
+        fetch('/toggle-offline-mode/', {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ offline_mode: isOffline }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            location.reload();
+          }
+        })
+        .catch(error => console.error('Erreur:', error));
+      });
+    }
 
-    document.getElementById('edit-profile-btn').addEventListener('click', function() {
-      window.location.href = "{% url 'profile_edit' %}";
-    });
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    if (editProfileBtn) {
+      editProfileBtn.addEventListener('click', function() {
+        window.location.href = "{% url 'profile_edit' %}";
+      });
+    }
   </script>
 {% endblock %}
