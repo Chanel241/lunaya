@@ -22,16 +22,13 @@
             {% if meditation.audio_file %}
             <div>
               <button onclick="playAudio('audio-{{ meditation.id }}')" class="btn btn-sm" style="background-color: #007bff; color: white; margin: 10px 0;">Jouer l'audio</button>
-              <a href="{{ meditation.audio_file.url }}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
+              <a href="{% static meditation.audio_file.url|cut:'/media/' %}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet audio ?')">Supprimer l'audio</a>
               {% endif %}
               <audio id="audio-{{ meditation.id }}" class="meditation-audio" style="width: 100%; margin: 20px auto; display: none;" preload="auto" onerror="console.error('Erreur audio pour {{ meditation.title }}:', this.error); alert('Erreur audio pour {{ meditation.title }} : vérifiez la console.');">
-                <source src="{{ meditation.audio_file.url }}" type="audio/mpeg">
-                {% if request.get_host != '127.0.0.1:8000' %}
-                  <source src="https://7820bd8df262.ngrok-free.app/media/meditations/energie_feminine_2JHuUei.mp3" type="audio/mpeg">
-                {% endif %}
-                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{{ meditation.audio_file.url }}" target="_blank">{{ meditation.audio_file.url }}</a></p>
+                <source src="{% static meditation.audio_file.url|cut:'/media/' %}" type="audio/mpeg">
+                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{% static meditation.audio_file.url|cut:'/media/' %}" target="_blank">Lien</a></p>
                 Votre navigateur ne supporte pas l’audio.
               </audio>
             </div>
@@ -39,13 +36,10 @@
             {% if meditation.video_file %}
             <div>
               <video controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;">
-                <source src="{{ meditation.video_file.url }}" type="video/mp4">
-                {% if request.get_host != '127.0.0.1:8000' %}
-                  <source src="https://7820bd8df262.ngrok-free.app{{ meditation.video_file.url }}" type="video/mp4">
-                {% endif %}
+                <source src="{% static meditation.video_file.url|cut:'/media/' %}" type="video/mp4">
                 Votre navigateur ne supporte pas la vidéo.
               </video>
-              <a href="{{ meditation.video_file.url }}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
+              <a href="{% static meditation.video_file.url|cut:'/media/' %}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')">Supprimer la vidéo</a>
               {% endif %}
@@ -81,13 +75,18 @@
   <script>
     function playAudio(audioId) {
       const audio = document.getElementById(audioId);
-      if (audio.paused) {
-        audio.style.display = 'block';
-        audio.play().catch(error => console.error('Erreur de lecture:', error));
-      } else {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.style.display = 'none';
+      if (audio) {
+        if (audio.paused) {
+          audio.style.display = 'block';
+          audio.play().catch(error => {
+            console.error('Erreur de lecture pour ' + audioId + ':', error);
+            alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
+          });
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.style.display = 'none';
+        }
       }
     }
 
@@ -101,35 +100,26 @@
         const cardType = card.getAttribute('data-type');
         if (type === 'audio' && cardType === 'audio') {
           isHidden = card.classList.contains('hidden');
-          if (isHidden) {
-            card.classList.add('active');
-            card.classList.remove('hidden');
-          } else {
-            card.classList.remove('active');
-            card.classList.add('hidden');
-          }
+          card.classList.toggle('hidden', !isHidden);
+          card.classList.toggle('active', isHidden);
         } else if (type === 'video' && cardType === 'video') {
           isHidden = card.classList.contains('hidden');
-          if (isHidden) {
-            card.classList.add('active');
-            card.classList.remove('hidden');
-          } else {
-            card.classList.remove('active');
-            card.classList.add('hidden');
-          }
+          card.classList.toggle('hidden', !isHidden);
+          card.classList.toggle('active', isHidden);
         }
       });
 
       if (type === 'audio') {
-        audioButton.textContent = isHidden ? 'Masquer les audios' : 'Afficher les audios';
+        audioButton.textContent = isHidden ? 'Afficher les audios' : 'Masquer les audios';
       } else if (type === 'video') {
-        videoButton.textContent = isHidden ? 'Masquer les vidéos' : 'Afficher les vidéos';
+        videoButton.textContent = isHidden ? 'Afficher les vidéos' : 'Masquer les vidéos';
       }
     }
 
-    // Masquer toutes les cartes par défaut au chargement
+    // Supprimer l'appel à filterMeditations non défini
     window.onload = function() {
-      filterMeditations('none');
+      // Pas de filterMeditations, on initialise les toggles
+      toggleMeditations('audio'); // Afficher les audios par défaut
     };
   </script>
 {% endblock %}
