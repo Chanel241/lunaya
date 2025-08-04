@@ -103,7 +103,7 @@ USE_TZ = True
 LOGIN_URL = '/login/'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'media']  # Inclure media pour collectstatic
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Correction : retirer BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True  # Aider à gérer les fichiers avec Whitenoise
@@ -157,4 +157,4 @@ USE_X_FORWARDED_HOST = True
 BASE_URL = 'https://370902762468.ngrok-free.app'
 
 CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False  # Corrigé la virgule en trop
+SESSION_COOKIE_SECURE = False  # Correction déjà appliquée
