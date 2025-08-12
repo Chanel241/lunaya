@@ -17,7 +17,7 @@
         <form method="post" class="form-group">
           {% csrf_token %}
           {% for field in form %}
-            {% if field.name != 'language' %}
+            {% if field.name != 'language' %} <!-- Exclure language pour le gérer séparément si besoin -->
               <div class="form-row">
                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
                 <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" class="form-control" {% if field.errors %}aria-invalid="true"{% endif %}>
@@ -29,6 +29,20 @@
               </div>
             {% endif %}
           {% endfor %}
+          <!-- Gérer language séparément pour un dropdown -->
+          <div class="form-row">
+            <label for="id_language" class="form-label">Langue</label>
+            <select name="language" id="id_language" class="form-control" {% if form.language.errors %}aria-invalid="true"{% endif %}>
+              {% for value, label in form.fields.language.choices %}
+                <option value="{{ value }}" {% if form.language.value|stringformat:"s" == value %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            {% if form.language.errors %}
+              {% for error in form.language.errors %}
+                <small class="text-danger">{{ error }}</small>
+              {% endfor %}
+            {% endif %}
+          </div>
           <div class="text-center mt-4">
             <button type="submit" class="btn" style="background-color: #d32f2f; color: white; padding: 0.5rem 1rem;">S'inscrire</button>
             <div class="mt-3">

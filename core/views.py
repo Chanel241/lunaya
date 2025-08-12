@@ -32,17 +32,20 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Profile.objects.create(
-                user=user,
-                birthdate=form.cleaned_data['birthdate'],
-                language=form.cleaned_data['language'],
-                last_period=form.cleaned_data['last_period']
-            )
+            profile_data = {
+                'birthdate': form.cleaned_data['birthdate'],
+                'language': form.cleaned_data['language'],
+                'last_period': form.cleaned_data['last_period']
+            }
+            Profile.objects.update_or_create(user=user, defaults=profile_data)
             login(request, user)
             messages.success(request, "Inscription réussie ! Bienvenue sur Lunaya.")
             return redirect('home')
         else:
-            messages.error(request, "Erreur dans le formulaire. Veuillez vérifier vos informations.")
+            messages.error(request, "Erreur dans le formulaire. Veuillez vérifier les champs ci-dessous.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form[field].label}: {error}")
     else:
         form = SignUpForm()
     return render(request, 'core/signup.html', {'form': form})
