@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import SignUpForm, ProfileForm
 from .models import Profile
+from django.db import transaction
 from django.utils import timezone
 from django.contrib import messages
 from django.urls import reverse, reverse_lazy
@@ -50,19 +51,27 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'core/signup.html', {'form': form})
 
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            login(request, user)
+            try:
+                with transaction.atomic():
+                    login(request, user)
+                    # Désactiver cycle_key temporairement pour tester
+                    # request.session.cycle_key()  # Commente cette ligne
+            except Exception as e:
+                messages.error(request, f"Erreur de connexion : {str(e)}")
+                return render(request, 'core/login.html', {'form': form})
             next_url = request.POST.get('next')
             if next_url:
                 try:
-                    return redirect(next_url)  
+                    return redirect(next_url)
                 except Exception:
-                    pass 
-            return redirect(reverse('home'))  
+                    pass
+            return redirect(reverse('home'))
         else:
             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
