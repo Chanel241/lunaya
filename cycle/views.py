@@ -5,6 +5,7 @@ from .forms import CycleForm
 from django.utils import timezone
 from django.contrib import messages
 from datetime import timedelta
+from django.db import transaction
 
 @login_required
 def cycle_tracker(request):
@@ -92,11 +93,18 @@ def cycle_add(request):
         if form.is_valid():
             cycle = form.save(commit=False)
             cycle.user = request.user
-            cycle.save()
-            messages.success(request, "Cycle ajouté avec succès.")
-            return redirect('cycle_tracker')
+            try:
+                with transaction.atomic():
+                    cycle.save()
+                messages.success(request, "Cycle ajouté avec succès.")
+                return redirect('cycle_tracker')
+            except Exception as e:
+                messages.error(request, f"Erreur lors de l'enregistrement : {str(e)}")
         else:
             messages.error(request, "Erreur dans le formulaire. Veuillez vérifier vos données.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{form.fields[field].label}: {error}")
     else:
         form = CycleForm()
     return render(request, 'cycle/add.html', {'form': form})

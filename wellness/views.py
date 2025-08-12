@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import WellnessTip
 from datetime import date
 import random
@@ -6,6 +7,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@login_required
 def wellness_list(request):
     today = date.today()
     tips = WellnessTip.objects.filter(date=today)

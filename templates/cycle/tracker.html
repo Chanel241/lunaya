@@ -2,10 +2,10 @@
 {% load static %}
 {% block title %}Mon Cycle{% endblock %}
 {% block content %}
-  <!-- Section du cycle actuel (visible par défaut) -->
-  {% if cycle_info %}
-  <div id="currentCycleSection" class="card mb-4 centered-card" style="border-color: {{ cycle_info.color|default:'gray' }}; opacity: 1; transition: opacity 0.5s ease;">
+  <!-- Section du cycle actuel (toujours présente, masquée si vide) -->
+  <div id="currentCycleSection" class="card mb-4 centered-card" style="border-color: {{ cycle_info.color|default:'gray' }}; opacity: {% if cycle_info %}1{% else %}0{% endif %}; transition: opacity 0.5s ease; display: block;">
     <div class="card-body text-center">
+      {% if cycle_info %}
       <h3 class="card-title" style="font-size: 1.5em; color: {{ cycle_info.color|default:'black' }};">Cycle Actuel</h3>
       <p><strong>Jour du cycle</strong> : {{ cycle_info.cycle_day }}</p>
       <p><strong>Phase actuelle</strong> : {{ cycle_info.phase }}</p>
@@ -26,8 +26,12 @@
       <div class="recommended-article">
         <p><strong>Article recommandé</strong> <a href="#" id="menstrualHealthLink" class="no-background-link" style="background: none !important; color: #0000ff !important;">Santé Menstruelle</a></p>
       </div>
+      {% else %}
+      <p class="text-center">Aucun cycle enregistré.</p>
+      {% endif %}
     </div>
   </div>
+
   <!-- Modal pour les données statiques -->
   <div id="menstrualHealthModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
     <div class="modal-content">
@@ -41,9 +45,6 @@
       <button id="closeModalBtn" style="background-color: #ff0000; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 10px;">Fermer</button>
     </div>
   </div>
-  {% else %}
-  <p class="text-center">Aucun cycle enregistré.</p>
-  {% endif %}
 
   <!-- Boutons de contrôle -->
   <div id="controlButtons" class="text-center mb-4">
@@ -98,7 +99,7 @@
             <div>{{ form.libido }}</div>
           </div>
           <div class="text-center mt-3">
-            <button type="submit" style="background-color: {{ cycle_info.color|default:'gray' }}; color: white; margin-right: 10px; border-radius: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;">Enregistrer</button>
+            <button type="submit" style="background-color: #ff0000; color: white; margin-right: 10px; border-radius: 15px; transition: transform 0.3s ease, box-shadow 0.3s ease;">Enregistrer</button>
             <a href="{% url 'cycle_tracker' %}" class="btn btn-secondary" style="transition: transform 0.3s ease, box-shadow 0.3s ease;">Retour au suivi</a>
           </div>
         </form>
@@ -106,7 +107,7 @@
     </div>
   </div>
 
-  <!-- Section de l'historique (masquée par défaut) -->
+  <!-- Section de l'historique (toujours présente, masquée si vide) -->
   <div id="historySection" class="form-section" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
     <h3 style="color: black; font-weight: bold; margin-top: 20px; text-align: center; text-transform: uppercase;">HISTORIQUE</h3>
     <div class="text-center mb-3">
@@ -116,6 +117,7 @@
       </form>
     </div>
     <div class="row justify-content-center">
+      {% if cycles %}
       {% for entry in cycles %}
       <div class="col-md-6 col-sm-12 mb-4">
         <div class="card" style="border-color: {{ entry.color|default:'gray' }}; margin: 0 auto; max-width: 400px; position: relative;">
@@ -144,22 +146,30 @@
           </div>
         </div>
       </div>
-      {% empty %}
-      <p class="text-center">Aucune entrée enregistrée.</p>
       {% endfor %}
+      {% else %}
+      <p class="text-center">Aucune entrée enregistrée.</p>
+      {% endif %}
     </div>
   </div>
 
   <!-- JavaScript pour gérer les boutons et animations -->
   <script>
-    const addEntryBtn = document.getElementById('addEntryBtn');
-    const historyBtn = document.getElementById('historyBtn');
-    const currentCycleSection = document.getElementById('currentCycleSection');
-    const addEntrySection = document.getElementById('addEntrySection');
-    const historySection = document.getElementById('historySection');
-    const controlButtons = document.getElementById('controlButtons');
+    document.addEventListener('DOMContentLoaded', function() {
+      const addEntryBtn = document.getElementById('addEntryBtn');
+      const historyBtn = document.getElementById('historyBtn');
+      const currentCycleSection = document.getElementById('currentCycleSection');
+      const addEntrySection = document.getElementById('addEntrySection');
+      const historySection = document.getElementById('historySection');
+      const controlButtons = document.getElementById('controlButtons');
 
-    if (addEntryBtn && currentCycleSection && addEntrySection && controlButtons) {
+      if (!addEntryBtn || !historyBtn || !currentCycleSection || !addEntrySection || !controlButtons) {
+        console.error('Un élément requis est manquant. Vérifiez les IDs dans le HTML:', {
+          addEntryBtn, historyBtn, currentCycleSection, addEntrySection, controlButtons
+        });
+        return;
+      }
+
       addEntryBtn.addEventListener('click', function() {
         currentCycleSection.style.display = 'none';
         addEntrySection.style.display = 'block';
@@ -167,9 +177,7 @@
         setTimeout(() => addEntrySection.style.opacity = '1', 10);
         if (historySection) historySection.style.display = 'none';
       });
-    }
 
-    if (historyBtn && currentCycleSection && historySection && controlButtons) {
       historyBtn.addEventListener('click', function() {
         currentCycleSection.style.display = 'none';
         addEntrySection.style.display = 'none';
@@ -177,9 +185,7 @@
         controlButtons.style.display = 'none';
         setTimeout(() => historySection.style.opacity = '1', 10);
       });
-    }
 
-    if (controlButtons) {
       document.querySelectorAll('.btn-secondary').forEach(link => {
         link.addEventListener('click', function(e) {
           if (this.getAttribute('href') === "{% url 'cycle_tracker' %}") {
@@ -193,40 +199,38 @@
           }
         });
       });
-    }
 
-    // Ajout d'effets au survol des boutons et du card
-    document.querySelectorAll('.btn, .card').forEach(element => {
-      element.addEventListener('mouseover', function() {
-        this.style.transform = 'translateY(-2px)';
-        this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
-      });
-      element.addEventListener('mouseout', function() {
-        this.style.transform = 'translateY(0)';
-        this.style.boxShadow = '0 0 0 rgba(0, 0, 0, 0)';
-      });
-    });
-
-    // Gestion du modal pour Santé Menstruelle
-    const menstrualHealthLink = document.getElementById('menstrualHealthLink');
-    const menstrualHealthModal = document.getElementById('menstrualHealthModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-
-    if (menstrualHealthLink && menstrualHealthModal && closeModalBtn) {
-      menstrualHealthLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        menstrualHealthModal.style.display = 'block';
+      document.querySelectorAll('.btn, .card').forEach(element => {
+        element.addEventListener('mouseover', function() {
+          this.style.transform = 'translateY(-2px)';
+          this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+        });
+        element.addEventListener('mouseout', function() {
+          this.style.transform = 'translateY(0)';
+          this.style.boxShadow = '0 0 0 rgba(0, 0, 0, 0)';
+        });
       });
 
-      closeModalBtn.addEventListener('click', function() {
-        menstrualHealthModal.style.display = 'none';
-      });
+      const menstrualHealthLink = document.getElementById('menstrualHealthLink');
+      const menstrualHealthModal = document.getElementById('menstrualHealthModal');
+      const closeModalBtn = document.getElementById('closeModalBtn');
 
-      window.addEventListener('click', function(e) {
-        if (e.target === menstrualHealthModal) {
+      if (menstrualHealthLink && menstrualHealthModal && closeModalBtn) {
+        menstrualHealthLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          menstrualHealthModal.style.display = 'block';
+        });
+
+        closeModalBtn.addEventListener('click', function() {
           menstrualHealthModal.style.display = 'none';
-        }
-      });
-    }
+        });
+
+        window.addEventListener('click', function(e) {
+          if (e.target === menstrualHealthModal) {
+            menstrualHealthModal.style.display = 'none';
+          }
+        });
+      }
+    });
   </script>
 {% endblock %}

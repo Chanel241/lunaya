@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Meditation
 from .forms import MeditationForm
 
+@login_required
 def meditations_list(request):
     meditations = Meditation.objects.all().order_by('title')
     return render(request, 'meditations/list.html', {'meditations': meditations})
