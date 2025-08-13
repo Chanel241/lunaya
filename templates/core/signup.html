@@ -2,46 +2,48 @@
 {% load static %}
 {% block title %}Inscription - Lunaya{% endblock %}
 {% block content %}
-  <div class="text-center mobile-friendly" style="margin-top: 2rem;"> 
+  <div class="text-center mobile-friendly" style="margin-top: 2rem;">
     <h2>Inscription <i class="fa fa-user-plus"></i></h2>
     <p>Créez votre compte pour rejoindre Lunaya.</p>
     {% if messages %}
-    <div class="messages">
-      {% for message in messages %}
-      <p style="color: #d88c9a; font-weight: 500;">{{ message }}</p>
-      {% endfor %}
-    </div>
+      <div class="messages">
+        {% for message in messages %}
+          <p style="color: #d88c9a; font-weight: 500;">{{ message }}</p>
+        {% endfor %}
+      </div>
     {% endif %}
-    <div class="card" style="transition: all 0.3s ease; border-color: #e0c0c0; max-width: 650px; margin: 0 auto;">
+    <div class="card" style="transition: all 0.3s ease; border-color: #e0c0c0; max-width: 800px; margin: 0 auto; padding: 1rem;">
       <div class="card-body">
         <form method="post" class="form-group">
           {% csrf_token %}
-          {% for field in form %}
-            {% if field.name != 'language' %} <!-- Exclure language pour le gérer séparément si besoin -->
-              <div class="form-row">
-                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" class="form-control" {% if field.errors %}aria-invalid="true"{% endif %}>
-                {% if field.errors %}
-                  {% for error in field.errors %}
-                    <small class="text-danger">{{ error }}</small>
-                  {% endfor %}
-                {% endif %}
-              </div>
-            {% endif %}
-          {% endfor %}
-          <!-- Gérer language séparément pour un dropdown -->
-          <div class="form-row">
-            <label for="id_language" class="form-label">Langue</label>
-            <select name="language" id="id_language" class="form-control" {% if form.language.errors %}aria-invalid="true"{% endif %}>
-              {% for value, label in form.fields.language.choices %}
-                <option value="{{ value }}" {% if form.language.value|stringformat:"s" == value %}selected{% endif %}>{{ label }}</option>
-              {% endfor %}
-            </select>
-            {% if form.language.errors %}
-              {% for error in form.language.errors %}
-                <small class="text-danger">{{ error }}</small>
-              {% endfor %}
-            {% endif %}
+          <div class="form-container">
+            {% for field in form %}
+              {% if field.name != 'language' %}
+                <div class="form-group mb-3">
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                  <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" class="form-control" {% if field.errors %}aria-invalid="true"{% endif %}>
+                  {% if field.errors %}
+                    {% for error in field.errors %}
+                      <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+            <!-- Gérer language séparément pour un dropdown -->
+            <div class="form-group mb-3">
+              <label for="id_language" class="form-label">Langue</label>
+              <select name="language" id="id_language" class="form-control" {% if form.language.errors %}aria-invalid="true"{% endif %}>
+                {% for value, label in form.fields.language.choices %}
+                  <option value="{{ value }}" {% if form.language.value|stringformat:"s" == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.language.errors %}
+                {% for error in form.language.errors %}
+                  <small class="text-danger">{{ error }}</small>
+                {% endfor %}
+              {% endif %}
+            </div>
           </div>
           <div class="text-center mt-4">
             <button type="submit" class="btn" style="background-color: #d32f2f; color: white; padding: 0.5rem 1rem;">S'inscrire</button>
@@ -53,4 +55,60 @@
       </div>
     </div>
   </div>
+  <style>
+    .form-container {
+      padding: 0 1rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .form-label {
+      font-size: 1.1rem;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 2rem; /* Augmenté le padding horizontal à 2rem pour plus de largeur intérieure */
+      font-size: 1rem;
+      box-sizing: border-box;
+      border: 2px solid #e0c0c0;
+      border-radius: 5px;
+    }
+    .card {
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .btn {
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #b71c1c;
+    }
+    small.text-danger {
+      display: block;
+      text-align: center;
+      margin-top: 0.25rem;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      .form-group {
+        align-items: stretch;
+      }
+      .form-label {
+        text-align: center;
+        padding: 0;
+      }
+      .form-control {
+        width: 100%; /* Passé à 100% sur mobile pour maximiser */
+      }
+    }
+  </style>
 {% endblock %}
