@@ -5,14 +5,15 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),  
+    path('', include('core.urls')),
     path('cycle/', include('cycle.urls')),
     path('wellness/', include('wellness.urls')),
     path('meditations/', include('meditations.urls')),
     path('cercle/', include('cercle.urls')),
     path('horoscope/', include('horoscope.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),  # Ajout pour les URLs d'auth
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)  # Ajout pour statiques
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

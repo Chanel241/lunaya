@@ -17,8 +17,7 @@ PROKARELA_ACCESS_TOKEN = os.getenv('PROKARELA_ACCESS_TOKEN')
 
 # Mettre à jour CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
-    'https://370902762468.ngrok-free.app',
-    'https://lunaya-production.up.railway.app'
+    'https://lunaya-production.up.railway.app',  # Supprimer ngrok
 ]
 
 INSTALLED_APPS = [
@@ -100,13 +99,15 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/accounts/login/'  # Utiliser le chemin complet
+LOGIN_REDIRECT_URL = '/cycle/'
+LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']  # Correction : retirer BASE_DIR / 'media'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-WHITENOISE_USE_FINDERS = True  # Aider à gérer les fichiers avec Whitenoise
+WHITENOISE_USE_FINDERS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -145,16 +146,17 @@ LOGGING = {
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'chanelbirimbi@gmail.com'
-EMAIL_HOST_PASSWORD = 'hdtccxsooiycgdiu'
+EMAIL_HOST_PASSWORD = 'hdtccxsooiycgdiu'  # Utilise un mot de passe d’application pour Gmail
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'chanelbirimbi@gmail.com'
 
-DOMAIN = '370902762468.ngrok-free.app'
+# Configuration pour la réinitialisation
+DOMAIN = 'lunaya-production.up.railway.app'  # Utiliser l’URL de production
 SITE_NAME = 'Lunaya'
 SECURE_SSL_REDIRECT = False
 USE_X_FORWARDED_HOST = True
-BASE_URL = 'https://370902762468.ngrok-free.app'
+BASE_URL = 'https://lunaya-production.up.railway.app'
 
 CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False  # Correction déjà appliquée
+SESSION_COOKIE_SECURE = False
