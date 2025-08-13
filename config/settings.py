@@ -17,7 +17,7 @@ PROKARELA_ACCESS_TOKEN = os.getenv('PROKARELA_ACCESS_TOKEN')
 
 # Mettre à jour CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
-    'https://lunaya-production.up.railway.app',  # Supprimer ngrok
+    'https://lunaya-production.up.railway.app',
 ]
 
 INSTALLED_APPS = [
@@ -99,7 +99,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-LOGIN_URL = '/accounts/login/'  # Utiliser le chemin complet
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/cycle/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -146,13 +146,13 @@ LOGGING = {
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'chanelbirimbi@gmail.com'
-EMAIL_HOST_PASSWORD = 'hdtccxsooiycgdiu'  # Utilise un mot de passe d’application pour Gmail
+EMAIL_HOST_PASSWORD = 'hdtccxsooiycgdiu'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'chanelbirimbi@gmail.com'
 
 # Configuration pour la réinitialisation
-DOMAIN = 'lunaya-production.up.railway.app'  # Utiliser l’URL de production
+DOMAIN = 'lunaya-production.up.railway.app'
 SITE_NAME = 'Lunaya'
 SECURE_SSL_REDIRECT = False
 USE_X_FORWARDED_HOST = True
