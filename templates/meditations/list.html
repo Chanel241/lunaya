@@ -9,7 +9,7 @@
       <a href="{% url 'meditation_create' %}" class="btn btn-sm" style="background-color: #ff0000; color: white;">Ajouter une méditation</a>
     </div>
     <div class="text-center mb-4">
-      <button onclick="toggleMeditations('audio')" class="btn btn-sm" style="background-color: #007bff; color: white;" id="audio-toggle">Afficher/Masquer les audios</button>
+      <button onclick="toggleMeditations('audio')" class="btn btn-sm" style="background-color: #007bff; color: white;" id="audio-toggle">Afficher les audios</button>
     </div>
     <div class="row">
       {% for meditation in meditations %}
@@ -80,22 +80,19 @@
     function toggleMeditations(type) {
       const cards = document.querySelectorAll('.meditation-card');
       const button = document.getElementById('audio-toggle');
+      let allHidden = true;
 
-      let anyVisible = false;
       cards.forEach(card => {
         const cardType = card.getAttribute('data-type');
         if (cardType === type) {
           const isHidden = card.classList.contains('hidden');
           card.classList.toggle('hidden', !isHidden);
           card.classList.toggle('active', isHidden);
-          anyVisible = anyVisible || !isHidden;
-        } else {
-          card.classList.add('hidden');
-          card.classList.remove('active');
+          allHidden = allHidden && card.classList.contains('hidden');
         }
       });
 
-      button.textContent = anyVisible ? 'Masquer les audios' : 'Afficher les audios';
+      button.textContent = allHidden ? 'Afficher les audios' : 'Masquer les audios';
     }
 
     window.onload = function() {
