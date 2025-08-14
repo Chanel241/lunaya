@@ -22,13 +22,13 @@
             {% if meditation.audio_file %}
             <div>
               <button onclick="playAudio('audio-{{ meditation.id }}')" class="btn btn-sm" style="background-color: #007bff; color: white; margin: 10px 0;">Jouer l'audio</button>
-              <a href="{{ meditation.audio_file.url }}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
+              <a href="{% static meditation.audio_file %}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet audio ?')">Supprimer l'audio</a>
               {% endif %}
               <audio id="audio-{{ meditation.id }}" class="meditation-audio" style="width: 100%; margin: 20px auto; display: none;" preload="auto" onerror="console.error('Erreur audio pour {{ meditation.title }}:', this.error); alert('Erreur audio pour {{ meditation.title }} : vérifiez la console.');">
-                <source src="{{ meditation.audio_file.url }}" type="audio/mpeg">
-                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{{ meditation.audio_file.url }}" target="_blank">Lien</a></p>
+                <source src="{% static meditation.audio_file %}" type="audio/mpeg">
+                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{% static meditation.audio_file %}" target="_blank">Lien</a></p>
                 Votre navigateur ne supporte pas l’audio.
               </audio>
             </div>
@@ -36,10 +36,10 @@
             {% if meditation.video_file %}
             <div>
               <video controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;" onerror="console.error('Erreur vidéo pour {{ meditation.title }}:', this.error); alert('Erreur vidéo pour {{ meditation.title }} : vérifiez la console.');">
-                <source src="{{ meditation.video_file.url }}" type="video/mp4">
+                <source src="{% static meditation.video_file %}" type="video/mp4">
                 Votre navigateur ne supporte pas la vidéo.
               </video>
-              <a href="{{ meditation.video_file.url }}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
+              <a href="{% static meditation.video_file %}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')">Supprimer la vidéo</a>
               {% endif %}

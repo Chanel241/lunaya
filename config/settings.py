@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'wellness',
     'meditations',
     'cercle',
-    'storages',  # Ajout pour S3
+    # 'storages',  # Commente temporairement si S3 n'est pas configuré
 ]
 
 MIDDLEWARE = [
@@ -109,7 +109,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 
-# Configuration S3 pour les médias
+# Section S3 (décommenter et configurer une fois les credentials prêts)
 # DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 # AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -120,10 +120,10 @@ WHITENOISE_USE_FINDERS = True
 # AWS_QUERYSTRING_AUTH = False
 # AWS_S3_ENCRYPTION = True
 
-MEDIA_URL = '/media/'  # URL pour accéder aux médias via S3
-MEDIA_ROOT = BASE_DIR / 'media'  # Chemin local pour développement
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # Augmenté à 100 Mo pour gérer des vidéos plus grandes
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
