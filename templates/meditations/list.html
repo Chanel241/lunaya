@@ -73,57 +73,49 @@
     }
   </style>
   <script>
-    function playAudio(audioId) {
-      const audio = document.getElementById(audioId);
-      if (audio) {
-        if (audio.paused) {
-          audio.style.display = 'block';
-          audio.play().catch(error => {
-            console.error('Erreur de lecture pour ' + audioId + ':', error);
-            alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
-          });
-        } else {
-          audio.pause();
-          audio.currentTime = 0;
-          audio.style.display = 'none';
-        }
+  function playAudio(audioId) {
+    const audio = document.getElementById(audioId);
+    if (audio) {
+      if (audio.paused) {
+        audio.style.display = 'block';
+        audio.play().catch(error => {
+          console.error('Erreur de lecture pour ' + audioId + ':', error);
+          alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
+        });
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.style.display = 'none';
       }
     }
+  }
 
-    function toggleMeditations(type) {
-      const cards = document.querySelectorAll('.meditation-card');
-      const audioButton = document.getElementById('audio-toggle');
-      const videoButton = document.getElementById('video-toggle');
-      let hasVisible = false;
+  function toggleMeditations(type) {
+    const cards = document.querySelectorAll('.meditation-card');
+    const button = document.getElementById(type === 'audio' ? 'audio-toggle' : 'video-toggle');
+    let anyVisible = Array.from(cards).some(card => {
+      return card.getAttribute('data-type') === type && !card.classList.contains('hidden');
+    });
 
-      cards.forEach(card => {
-        const cardType = card.getAttribute('data-type');
-        if (type === 'audio' && cardType === 'audio') {
-          const isHidden = card.classList.contains('hidden');
-          card.classList.toggle('hidden', !isHidden);
-          card.classList.toggle('active', isHidden);
-          hasVisible = !isHidden || hasVisible;
-        } else if (type === 'video' && cardType === 'video') {
-          const isHidden = card.classList.contains('hidden');
-          card.classList.toggle('hidden', !isHidden);
-          card.classList.toggle('active', isHidden);
-          hasVisible = !isHidden || hasVisible;
-        } else if (type !== cardType) {
-          card.classList.add('hidden');
-          card.classList.remove('active');
-        }
-      });
+    // Mettre à jour le texte avant le toggle
+    button.textContent = anyVisible ? 'Masquer les ' + (type === 'audio' ? 'audios' : 'vidéos') : 'Afficher les ' + (type === 'audio' ? 'audios' : 'vidéos');
 
-      if (type === 'audio') {
-        audioButton.textContent = hasVisible ? 'Masquer les audios' : 'Afficher les audios';
-      } else if (type === 'video') {
-        videoButton.textContent = hasVisible ? 'Masquer les vidéos' : 'Afficher les vidéos';
+    cards.forEach(card => {
+      const cardType = card.getAttribute('data-type');
+      if (cardType === type) {
+        const isHidden = card.classList.contains('hidden');
+        card.classList.toggle('hidden', !isHidden);
+        card.classList.toggle('active', isHidden);
+      } else {
+        card.classList.add('hidden');
+        card.classList.remove('active');
       }
-    }
+    });
+  }
 
-    window.onload = function() {
-      document.getElementById('audio-toggle').textContent = 'Afficher les audios';
-      document.getElementById('video-toggle').textContent = 'Afficher les vidéos';
-    };
-  </script>
+  window.onload = function() {
+    document.getElementById('audio-toggle').textContent = 'Afficher les audios';
+    document.getElementById('video-toggle').textContent = 'Afficher les vidéos';
+  };
+</script>
 {% endblock %}
