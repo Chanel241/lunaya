@@ -4,8 +4,8 @@ from .models import Meditation
 from .forms import MeditationForm
 
 @login_required
-def meditations_list(request):
-    meditations = Meditation.objects.all().order_by('title')
+def meditation_list(request):
+    meditations = Meditation.objects.filter(audio_file__isnull=False)
     return render(request, 'meditations/list.html', {'meditations': meditations})
 
 @login_required
