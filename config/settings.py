@@ -15,7 +15,6 @@ PROKARELA_CLIENT_ID = os.getenv('PROKARELA_CLIENT_ID')
 PROKARELA_CLIENT_SECRET = os.getenv('PROKARELA_CLIENT_SECRET')
 PROKARELA_ACCESS_TOKEN = os.getenv('PROKARELA_ACCESS_TOKEN')
 
-# Mettre à jour CSRF_TRUSTED_ORIGINS
 CSRF_TRUSTED_ORIGINS = [
     'https://lunaya-production.up.railway.app',
 ]
@@ -33,6 +32,7 @@ INSTALLED_APPS = [
     'wellness',
     'meditations',
     'cercle',
+    'storages',  # Ajout pour S3
 ]
 
 MIDDLEWARE = [
@@ -109,16 +109,21 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 
+# Configuration S3 pour les médias
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = 'us-east-1'  # Ajuster selon région
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = 'public-read'
+AWS_QUERYSTRING_AUTH = False
+AWS_S3_ENCRYPTION = True
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'  # URL pour accéder aux médias via S3
+MEDIA_ROOT = BASE_DIR / 'media'  # Chemin local pour développement
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # Augmenté à 100 Mo pour gérer des vidéos plus grandes
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -157,7 +162,6 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'chanelbirimbi@gmail.com'
 
-# Configuration pour la réinitialisation
 DOMAIN = 'lunaya-production.up.railway.app'
 SITE_NAME = 'Lunaya'
 SECURE_SSL_REDIRECT = False

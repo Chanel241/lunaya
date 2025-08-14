@@ -22,13 +22,13 @@
             {% if meditation.audio_file %}
             <div>
               <button onclick="playAudio('audio-{{ meditation.id }}')" class="btn btn-sm" style="background-color: #007bff; color: white; margin: 10px 0;">Jouer l'audio</button>
-              <a href="{% static meditation.audio_file %}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
+              <a href="{{ meditation.audio_file.url }}" download="{{ meditation.title }}.mp3" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger l'audio</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet audio ?')">Supprimer l'audio</a>
               {% endif %}
               <audio id="audio-{{ meditation.id }}" class="meditation-audio" style="width: 100%; margin: 20px auto; display: none;" preload="auto" onerror="console.error('Erreur audio pour {{ meditation.title }}:', this.error); alert('Erreur audio pour {{ meditation.title }} : vérifiez la console.');">
-                <source src="{% static meditation.audio_file %}" type="audio/mpeg">
-                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{% static meditation.audio_file %}" target="_blank">Lien</a></p>
+                <source src="{{ meditation.audio_file.url }}" type="audio/mpeg">
+                <p style="color: red;">Audio non chargé. Testez le lien : <a href="{{ meditation.audio_file.url }}" target="_blank">Lien</a></p>
                 Votre navigateur ne supporte pas l’audio.
               </audio>
             </div>
@@ -36,10 +36,10 @@
             {% if meditation.video_file %}
             <div>
               <video controls class="w-100" style="width: 100% !important; height: auto; display: block; margin: 20px auto;" onerror="console.error('Erreur vidéo pour {{ meditation.title }}:', this.error); alert('Erreur vidéo pour {{ meditation.title }} : vérifiez la console.');">
-                <source src="{% static meditation.video_file %}" type="video/mp4">
+                <source src="{{ meditation.video_file.url }}" type="video/mp4">
                 Votre navigateur ne supporte pas la vidéo.
               </video>
-              <a href="{% static meditation.video_file %}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
+              <a href="{{ meditation.video_file.url }}" download="{{ meditation.title }}.mp4" class="btn btn-sm" style="background-color: #28a745; color: white; margin: 10px 0;">Télécharger la vidéo</a>
               {% if request.user.is_authenticated and meditation.user == request.user %}
               <a href="{% url 'meditation_delete' meditation.id %}" class="btn btn-sm" style="background-color: #dc3545; color: white; margin: 10px 0;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')">Supprimer la vidéo</a>
               {% endif %}
@@ -73,49 +73,49 @@
     }
   </style>
   <script>
-  function playAudio(audioId) {
-    const audio = document.getElementById(audioId);
-    if (audio) {
-      if (audio.paused) {
-        audio.style.display = 'block';
-        audio.play().catch(error => {
-          console.error('Erreur de lecture pour ' + audioId + ':', error);
-          alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
-        });
-      } else {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.style.display = 'none';
+    function playAudio(audioId) {
+      const audio = document.getElementById(audioId);
+      if (audio) {
+        if (audio.paused) {
+          audio.style.display = 'block';
+          audio.play().catch(error => {
+            console.error('Erreur de lecture pour ' + audioId + ':', error);
+            alert('Erreur de lecture pour ' + audioId + ' : vérifiez la console.');
+          });
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.style.display = 'none';
+        }
       }
     }
-  }
 
-  function toggleMeditations(type) {
-    const cards = document.querySelectorAll('.meditation-card');
-    const button = document.getElementById(type === 'audio' ? 'audio-toggle' : 'video-toggle');
-    let anyVisible = Array.from(cards).some(card => {
-      return card.getAttribute('data-type') === type && !card.classList.contains('hidden');
-    });
+    function toggleMeditations(type) {
+      const cards = document.querySelectorAll('.meditation-card');
+      const button = document.getElementById(type === 'audio' ? 'audio-toggle' : 'video-toggle');
 
-    // Mettre à jour le texte avant le toggle
-    button.textContent = anyVisible ? 'Masquer les ' + (type === 'audio' ? 'audios' : 'vidéos') : 'Afficher les ' + (type === 'audio' ? 'audios' : 'vidéos');
+      // Appliquer le toggle d'abord
+      let anyVisible = false;
+      cards.forEach(card => {
+        const cardType = card.getAttribute('data-type');
+        if (cardType === type) {
+          const isHidden = card.classList.contains('hidden');
+          card.classList.toggle('hidden', !isHidden);
+          card.classList.toggle('active', isHidden);
+          anyVisible = anyVisible || !isHidden;
+        } else {
+          card.classList.add('hidden');
+          card.classList.remove('active');
+        }
+      });
 
-    cards.forEach(card => {
-      const cardType = card.getAttribute('data-type');
-      if (cardType === type) {
-        const isHidden = card.classList.contains('hidden');
-        card.classList.toggle('hidden', !isHidden);
-        card.classList.toggle('active', isHidden);
-      } else {
-        card.classList.add('hidden');
-        card.classList.remove('active');
-      }
-    });
-  }
+      // Mettre à jour le texte après le toggle
+      button.textContent = anyVisible ? 'Masquer les ' + (type === 'audio' ? 'audios' : 'vidéos') : 'Afficher les ' + (type === 'audio' ? 'audios' : 'vidéos');
+    }
 
-  window.onload = function() {
-    document.getElementById('audio-toggle').textContent = 'Afficher les audios';
-    document.getElementById('video-toggle').textContent = 'Afficher les vidéos';
-  };
-</script>
+    window.onload = function() {
+      document.getElementById('audio-toggle').textContent = 'Afficher les audios';
+      document.getElementById('video-toggle').textContent = 'Afficher les vidéos';
+    };
+  </script>
 {% endblock %}

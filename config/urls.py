@@ -12,11 +12,11 @@ urlpatterns = [
     path('meditations/', include('meditations.urls')),
     path('cercle/', include('cercle.urls')),
     path('horoscope/', include('horoscope.urls')),
-    # URL personnalisée pour la connexion
     path('accounts/login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
-    path('accounts/', include('django.contrib.auth.urls')),  # Inclut les autres URLs d'auth
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
+# Servir les médias en développement, S3 gère en production
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
