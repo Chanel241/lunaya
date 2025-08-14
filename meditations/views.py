@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from .models import Meditation
 from .forms import MeditationForm
+from django.contrib.auth.decorators import login_required
 
 @login_required
 def meditation_list(request):
@@ -16,7 +16,7 @@ def meditation_create(request):
             meditation = form.save(commit=False)
             meditation.user = request.user
             meditation.save()
-            return redirect('meditations_list')
+            return redirect('meditation_list')
     else:
         form = MeditationForm()
     return render(request, 'meditations/create.html', {'form': form})
@@ -25,9 +25,5 @@ def meditation_create(request):
 def meditation_delete(request, pk):
     meditation = Meditation.objects.get(id=pk)
     if request.user == meditation.user:
-        if request.method == 'POST':
-            meditation.delete()
-            return redirect('meditations_list')
-        return render(request, 'meditations/confirm_delete.html', {'meditation': meditation})
-    else:
-        return redirect('meditations_list') 
+        meditation.delete()
+    return redirect('meditation_list')
