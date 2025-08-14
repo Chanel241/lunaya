@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'wellness',
     'meditations',
     'cercle',
-    # 'storages',  # Commente temporairement si S3 n'est pas configuré
 ]
 
 MIDDLEWARE = [
@@ -109,19 +108,12 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_USE_FINDERS = True
 
-# Section S3 (décommenter et configurer une fois les credentials prêts)
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-# AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-# AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
-# AWS_S3_REGION_NAME = 'us-east-1'
-# AWS_S3_FILE_OVERWRITE = False
-# AWS_DEFAULT_ACL = 'public-read'
-# AWS_QUERYSTRING_AUTH = False
-# AWS_S3_ENCRYPTION = True
-
+# Configuration pour servir les médias avec WhiteNoise (temporaire)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+if not DEBUG:
+    WHITENOISE_MEDIA_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+    DEFAULT_FILE_STORAGE = WHITENOISE_MEDIA_STORAGE
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
 
