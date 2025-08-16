@@ -43,4 +43,60 @@
       </div>
     </div>
   </div>
+  <style>
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .form-label {
+      font-size: 1.1rem;
+      text-align: left; /* Changé de center à left pour un affichage naturel */
+      width: 100%;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.5rem 1rem; /* Réduit le padding horizontal à 1rem pour plus d'espace */
+      font-size: 1rem;
+      box-sizing: border-box;
+      border: 2px solid #e0c0c0;
+      border-radius: 5px;
+    }
+    .card {
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .btn {
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #b71c1c;
+    }
+    small.text-danger {
+      display: block;
+      text-align: center;
+      margin-top: 0.25rem;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      .form-row {
+        align-items: stretch;
+      }
+      .form-label {
+        font-size: 0.95rem; /* Réduit la taille de police sur mobile */
+        text-align: left;
+        padding: 0;
+      }
+      .form-control {
+        width: 100%;
+        padding: 0.5rem 0.75rem; /* Réduit encore plus le padding sur mobile */
+      }
+    }
+  </style>
 {% endblock %}
